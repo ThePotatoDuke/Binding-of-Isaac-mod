@@ -1,0 +1,11 @@
+<sounds root="sfx/">
+    <sound name="explosion_bell">
+        <sample weight="1" path="explosion_bell.wav" />
+    </sound>
+    <sound name="petrifying_bell">
+        <sample weight="1" path="petrifying_bell.wav" />
+    </sound>
+    <sound name="cuckoo_bell">
+        <sample weight="1" path="cuckoo_bell.wav" />
+    </sound>
+</sounds>
