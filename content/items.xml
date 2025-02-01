@@ -1,4 +1,6 @@
 <items gfxroot="gfx/items/" version="1">
     <passive cache="" name="Grandfather's Clock" description="I can hear its chimes"
         gfx="clock.png" quality="2" />
+    <passive cache="" name="Wind-Up Key" description="Keep the gears turning..."
+        gfx="key.png" quality="2" />
 </items>
