@@ -34,20 +34,17 @@ local function startDeadBirdSequence()
     startTimer(40, function()
         if math.random() < 0.5 then
             spawnDeadBird(player)
-            sfx:Play(SOUND_BIRD, 4, 2, false, 0.7)
+            sfx:Play(SOUND_BIRD, 4, 2, false, 0.8)
 
             startTimer(40, function()
                 if math.random() < 0.5 then
                     spawnDeadBird(player)
-                    sfx:Play(SOUND_BIRD, 4, 2, false, 0.4)
+                    sfx:Play(SOUND_BIRD, 4, 2, false, 0.6)
                 end
             end)
         end
     end)
 end
-
-local spawnedDeadBirds = {}
-
 
 
 function ClockItem:removeDeadBirds()
@@ -68,7 +65,7 @@ function ClockItem:OnBellChime(player)
     local roll = rng:RandomInt(100)
 
     if roll < 33 then
-        room:MamaMegaExplosion(Vector.Zero)
+        room:MamaMegaExplosion(player.Position)
         sfx:Play(SOUND_EXPLOSION, 3.6)
     elseif roll < 66 then
         for _, entity in pairs(Isaac.GetRoomEntities()) do
