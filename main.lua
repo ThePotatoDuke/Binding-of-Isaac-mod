@@ -16,4 +16,8 @@ ClockMod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, function()
     ClockMod.Items.Clock:removeDeadBirds()
 end)
 
+ClockMod:AddCallback(ModCallbacks.MC_POST_RENDER, function()
+    ClockMod.Items.Key:CheckShootingInputs()
+end)
+
 return ClockMod
