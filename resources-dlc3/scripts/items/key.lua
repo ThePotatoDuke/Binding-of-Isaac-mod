@@ -107,6 +107,16 @@ function KeyItem:CheckShootingInputs()
         if Input.IsActionTriggered(button, player.ControllerIndex) then
             table.insert(inputHistory, direction)
             print(isCircling())
+            local redTintFactor = 0.1 * isCircling()              -- Adjust the red tint intensity
+            local greenBlueFactor = 0.7765 - (0.1 * isCircling()) -- Decrease green and blue values to enhance red
+
+            -- Cap the red, green, and blue components
+            local red = math.min(0.8902 + redTintFactor, 1) -- Cap red to a maximum of 1
+            local green = math.max(greenBlueFactor, 0.2)    -- Ensure green is at least 0
+            local blue = math.max(greenBlueFactor, 0.2)     -- Ensure blue is at least 0
+
+            -- Set the color with the capped values
+            player:SetColor(Color(red, green, blue, 1.0, 0.0, 0.0, 0.0), 30, 0, true, true)
         end
     end
 end
