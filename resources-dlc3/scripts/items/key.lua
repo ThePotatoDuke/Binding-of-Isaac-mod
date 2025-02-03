@@ -11,7 +11,6 @@ local SHOOT_DIRECTIONS = {
 
 -- Store the last few inputs
 local inputHistory     = {}
-local maxHistory       = 4 -- How many inputs to track
 
 
 
@@ -112,7 +111,7 @@ function KeyItem:CheckShootingInputs()
             -- end
 
             -- Check for full circle
-            print(isCircling())
+            print("hiiii")
             -- Print the input history
         end
     end

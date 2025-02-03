@@ -1,13 +1,12 @@
 -- Register the mod at the start
 local ClockMod = RegisterMod("Grandfather's Clock", 1)
 
--- Load items
+-- Use include instead of require to force reload every time
 ClockMod.Items = {}
-ClockMod.Items.Clock = require("resources-dlc3.scripts.items.clock")
+ClockMod.Items.Clock = include("resources-dlc3.scripts.items.clock")
+ClockMod.Items.Key = include("resources-dlc3.scripts.items.key")
 
-ClockMod.Items.Key = require("resources-dlc3.scripts.items.key")
-
--- Add callbacks or logic below after ClockMod is defined
+-- Add callbacks
 ClockMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
     ClockMod.Items.Clock:OnUpdate()
 end)
