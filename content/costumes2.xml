@@ -1,0 +1,3 @@
+<costumes anim2root="gfx/characters/">
+    <costume id="1" anim2path="wind_up_key_item.anim2" type="passsive" priority="0" />
+</costumes>

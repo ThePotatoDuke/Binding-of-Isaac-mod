@@ -33,7 +33,7 @@ local function getWrappedIndex(index)
 
     return wrappedIndex
 end
-local direction
+local circleDirection
 -- Function to check if input matches a circle pattern (either clockwise or counter-clockwise)
 local function isCircling()
     local ctr = 1
@@ -53,89 +53,111 @@ local function isCircling()
         local matched = false
 
         -- Check CW sequence first
-        if inputHistory[historyCtr] == CIRCLE_SEQUENCE[getWrappedIndex(sequenceCtr)] and direction ~= "CCW" then
+        if inputHistory[historyCtr] == CIRCLE_SEQUENCE[getWrappedIndex(sequenceCtr)] and circleDirection ~= "CCW" then
             ctr = ctr + 1
             sequenceCtr = sequenceCtr + 1
-
-
-
             -- If we're moving clockwise and history has more than one input, set direction to CW
             if #inputHistory > 1 then
-                direction = "CW"
+                circleDirection = "CW"
             end
             matched = true
         end
 
         -- If not matched in CW, check CCW sequence
-        if inputHistory[historyCtr] == CIRCLE_SEQUENCE[getWrappedIndex(sequenceCtr)] and direction ~= "CW" then
+        if inputHistory[historyCtr] == CIRCLE_SEQUENCE[getWrappedIndex(sequenceCtr)] and circleDirection ~= "CW" then
             ctr = ctr + 1
             sequenceCtr = sequenceCtr - 1
 
 
             -- If we're moving counter-clockwise and history has more than one input, set direction to CCW
             if #inputHistory > 1 then
-                direction = "CCW"
+                circleDirection = "CCW"
             end
             matched = true
         end
 
         -- If no match in either sequence, reset everything
         if not matched then
-            if direction == "CW" then
-                direction = "CCW"
+            if circleDirection == "CW" then
+                circleDirection = "CCW"
             else
-                direction = "CW"
+                circleDirection = "CW"
             end
             ctr = 1
             sequenceCtr = 1
             historyCtr = 1    -- Restart history check from the beginning
             inputHistory = {} -- Optional: Clear the history if you want to discard previous inputs
-            return ctr
         end
 
         historyCtr = historyCtr + 1 -- Move to the next input in history
     end
-
-    -- Return the greater of the two counters
-    return ctr
 end
 
 local autoShootTimer = 0 -- Timer for controlling shot intervals
-local shootCooldown = 10 -- Number of frames between each shot
+local shootCooldown = 2  -- Number of frames between each shot
 local isAutoShooting = false
+
+
 
 local spiralIndex = 1  -- Track the current step in the spiral
 local spiralSpeed = 10 -- Speed of each tear
-local numSteps = 5     -- Total steps before resetting (controls how many tears make a full loop)
+local numSteps = 8     -- Total steps before resetting (controls how many tears make a full loop)
 
-local function shootBullet()
+
+local function shootBullet(shootDirection)
     local player = Isaac.GetPlayer(0)
     local position = player.Position
 
-    -- Calculate angle based on the current step
-    local angle = math.rad(spiralIndex * (360 / numSteps))
+    -- Calculate base velocity based on direction
 
-    -- Compute velocity in the spiral direction
-    local velocity = Vector(math.cos(angle) * spiralSpeed, math.sin(angle) * spiralSpeed)
+    if shootDirection == "LEFT" then
+        player:SetHeadDirection(Direction.LEFT, 5, true)
+    elseif shootDirection == "UP" then
+        player:SetHeadDirection(Direction.UP, 5, true)
+    elseif shootDirection == "RIGHT" then
+        player:SetHeadDirection(Direction.RIGHT, 5, true)
+    elseif shootDirection == "DOWN" then
+        player:SetHeadDirection(Direction.DOWN, 5, true)
+    end
+
+    local directionMultiplier = 1
+    if circleDirection == "CW" then
+        directionMultiplier = -directionMultiplier
+    end
+    -- Spiral logic: Calculate offset angle
+    local angle = math.rad(spiralIndex * (directionMultiplier * 360 / numSteps))
+    local spiralOffset = Vector(math.cos(angle) * spiralSpeed, math.sin(angle) * spiralSpeed)
+
+    -- Combine base direction with spiral movement
+    local finalVelocity = spiralOffset
 
     -- Fire the tear
-    local tear = player:FireTear(position, velocity, false, false, false)
+    local baseVelocity = finalVelocity
+    local spreadAngle = 30 -- Adjust the spread of the tears (in degrees)
 
-    -- Customize tear behavior
-    tear.Scale = 1.1
-    tear.FallingSpeed = -5
-    tear.FallingAcceleration = 0.5
+    for i = -1, 1 do
+        -- Rotate the base velocity slightly for each tear
+        local angle = baseVelocity:GetAngleDegrees() + (i * spreadAngle)
+        local newVelocity = Vector.FromAngle(angle) * baseVelocity:Length()
+
+        -- Fire the tear
+        local tear = player:FireTear(position, newVelocity, false, false, false)
+
+        -- Customize tear behavior
+        tear.Scale = 1.1
+        tear.FallingSpeed = -3
+        tear.FallingAcceleration = 0.5
+    end
 
     -- Increment spiral index for the next shot
     spiralIndex = spiralIndex + 1
-
-    -- Reset when completing a full loop
     if spiralIndex > numSteps then
         spiralIndex = 1
     end
+
+    -- Trigger color reset (gradual)
+    colorResetTimer = colorResetDuration
 end
-
-
 
 local function handleAutoShoot()
     if #inputHistory > 0 then
@@ -148,6 +170,7 @@ local function handleAutoShoot()
         isAutoShooting = false
     end
 end
+
 
 
 local redTintFactor
@@ -166,6 +189,7 @@ function KeyItem:CheckShootingInputs()
     for button, direction in pairs(SHOOT_DIRECTIONS) do
         if Input.IsActionTriggered(button, player.ControllerIndex) then
             table.insert(inputHistory, direction)
+            isCircling()
             inputDetected = true
             inactivityTimer = 0
             isAutoShooting = false -- Disable auto-shoot since a key was pressed
@@ -202,6 +226,7 @@ function KeyItem:CheckShootingInputs()
     if isAutoShooting then
         handleAutoShoot()
     end
+
 
 
     -- Increment auto-shoot timer every frame
