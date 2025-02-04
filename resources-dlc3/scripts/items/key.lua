@@ -33,7 +33,7 @@ local function getWrappedIndex(index)
 
     return wrappedIndex
 end
-
+local direction
 -- Function to check if input matches a circle pattern (either clockwise or counter-clockwise)
 local function isCircling()
     local ctr = 1
@@ -48,49 +48,55 @@ local function isCircling()
         end
     end
 
-    -- Save the initial index
-    local startSequenceIndex = sequenceCtr
-    local startHistoryIndex = historyCtr
-
-    -- Check for CW direction first
-    local isCW = true
-    historyCtr = startHistoryIndex
-    sequenceCtr = startSequenceIndex
-
+    -- Now that the first match is found for both CW and CCW, check the rest of the inputs
     while historyCtr <= #inputHistory do
-        if inputHistory[historyCtr] ~= CIRCLE_SEQUENCE[getWrappedIndex(sequenceCtr)] then
-            isCW = false
-            break
-        end
-        sequenceCtr = sequenceCtr + 1
-        historyCtr = historyCtr + 1
-        ctr = ctr + 1
-    end
+        local matched = false
 
-    -- If CW was not detected, check CCW direction
-    if not isCW then
-        ctr = 1
-        historyCtr = startHistoryIndex
-        sequenceCtr = startSequenceIndex
-        local isCCW = true
-
-        while historyCtr <= #inputHistory do
-            if inputHistory[historyCtr] ~= CIRCLE_SEQUENCE[getWrappedIndex(sequenceCtr)] then
-                isCCW = false
-                break
-            end
-            sequenceCtr = sequenceCtr - 1
-            historyCtr = historyCtr + 1
+        -- Check CW sequence first
+        if inputHistory[historyCtr] == CIRCLE_SEQUENCE[getWrappedIndex(sequenceCtr)] and direction ~= "CCW" then
             ctr = ctr + 1
+            sequenceCtr = sequenceCtr + 1
+
+
+
+            -- If we're moving clockwise and history has more than one input, set direction to CW
+            if #inputHistory > 1 then
+                direction = "CW"
+            end
+            matched = true
         end
 
-        if isCCW then
+        -- If not matched in CW, check CCW sequence
+        if inputHistory[historyCtr] == CIRCLE_SEQUENCE[getWrappedIndex(sequenceCtr)] and direction ~= "CW" then
+            ctr = ctr + 1
+            sequenceCtr = sequenceCtr - 1
+
+
+            -- If we're moving counter-clockwise and history has more than one input, set direction to CCW
+            if #inputHistory > 1 then
+                direction = "CCW"
+            end
+            matched = true
+        end
+
+        -- If no match in either sequence, reset everything
+        if not matched then
+            if direction == "CW" then
+                direction = "CCW"
+            else
+                direction = "CW"
+            end
+            ctr = 1
+            sequenceCtr = 1
+            historyCtr = 1    -- Restart history check from the beginning
+            inputHistory = {} -- Optional: Clear the history if you want to discard previous inputs
             return ctr
         end
-    else
-        return ctr
+
+        historyCtr = historyCtr + 1 -- Move to the next input in history
     end
 
+    -- Return the greater of the two counters
     return ctr
 end
 
@@ -127,21 +133,21 @@ local function shootBullet(direction)
 end
 
 local function handleAutoShoot()
-    isAutoShooting = true
     if #inputHistory > 0 then
         if autoShootTimer >= shootCooldown then
             autoShootTimer = 0                           -- Reset timer
             local lastInput = table.remove(inputHistory) -- Remove last input
-            print(#inputHistory)
             shootBullet(lastInput)                       -- Actually shoot the projectile
         end
+    else
+        isAutoShooting = false
     end
-    isAutoShooting = false
 end
 
 
-local redTintFactor = 0.1 * isCircling()         -- Adjust the red tint intensity
-local greenBlueFactor = 1 - (0.1 * isCircling()) -- Decrease green and blue values to enhance red
+local redTintFactor
+local greenFactor
+local blueFactor
 
 -- Function to check shooting inputs and handle timer reset
 function KeyItem:CheckShootingInputs()
@@ -156,53 +162,42 @@ function KeyItem:CheckShootingInputs()
         if Input.IsActionTriggered(button, player.ControllerIndex) then
             table.insert(inputHistory, direction)
             inputDetected = true
-            print(isCircling()) -- Debugging circle check
-
-
-            -- Set the color with the capped values
-
-
-            -- Reset inactivity timer on input
             inactivityTimer = 0
             isAutoShooting = false -- Disable auto-shoot since a key was pressed
         end
     end
     -- Update color values based on circling
-    redTintFactor = 0.1 * #inputHistory         -- Adjust the red tint intensity
-    greenBlueFactor = 1 - (0.1 * #inputHistory) -- Decrease green and blue values to enhance red
-
+    redTintFactor = 0.1 * #inputHistory          -- Adjust the red tint intensity
+    greenFactor = 0.7765 - (0.1 * #inputHistory) -- Decrease green and blue values to enhance red
+    blueFactor = 0.7725 - (0.1 * #inputHistory)
+    print(#inputHistory)
     -- Cap the red, green, and blue components
     red = math.min(0.8902 + redTintFactor, 1) -- Cap red to a maximum of 1
-    green = math.max(greenBlueFactor, 0.2)    -- Ensure green is at least 0.2
-    blue = math.max(greenBlueFactor, 0.2)     -- Ensure blue is at least 0.2
+    green = math.max(greenFactor, 0.2)        -- Ensure green is at least 0.2
+    blue = math.max(blueFactor, 0.2)          -- Ensure blue is at least 0.2
 
-    player:SetColor(Color(red, green, blue, 1.0, 0.0, 0.0, 0.0), 0, 0, false, false)
-
-    -- -- Gradually reset the color back to normal when no input is detected
-    -- if colorResetTimer > 0 then
-    --     -- Gradually reduce red tint from 1 to 0.8902
-    --     local red = math.max(0.8902, redTintFactor * (colorResetTimer / colorResetDuration))
-
-    --     -- Gradually increase green and blue from 0.2 to 0.7765
-    --     local green = math.max(1, (colorResetTimer / colorResetDuration) * (0.7765 - 0.2) + 0.2)
-    --     local blue = math.max(1, (colorResetTimer / colorResetDuration) * (0.7765 - 0.2) + 0.2)
-
-    --     -- Set the color with the updated values
-    --     player:SetColor(Color(red, green, blue, 1.0, 0.0, 0.0, 0.0), 0, 0, false, false)
-
-    --     -- Decrease the timer over time
-    --     colorResetTimer = colorResetTimer - 1
-    -- end
 
     -- If no input was detected, update the inactivity timer
     if not inputDetected then
         inactivityTimer = inactivityTimer + 1
     end
 
-    -- If inactivity timer has expired and auto-shoot is not already running, start auto-shooting
-    if inactivityTimer >= 30 then -- Set duration for inactivity (30 frames = 0.5 second)
+    if inactivityTimer >= 30 then
+        if #inputHistory <= 3 then
+            red = 0.8902
+            green = 0.7765
+            blue = 0.7725
+        elseif not isAutoShooting then
+            isAutoShooting = true
+        end
+    end
+
+    player:SetColor(Color(red, green, blue, 1.0, 0.0, 0.0, 0.0), 0, 0, false, false)
+
+    if isAutoShooting then
         handleAutoShoot()
     end
+
 
     -- Increment auto-shoot timer every frame
     autoShootTimer = autoShootTimer + 1
