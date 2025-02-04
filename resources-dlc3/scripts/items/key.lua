@@ -104,33 +104,38 @@ local autoShootTimer = 0 -- Timer for controlling shot intervals
 local shootCooldown = 10 -- Number of frames between each shot
 local isAutoShooting = false
 
-local function shootBullet(direction)
+local spiralIndex = 1  -- Track the current step in the spiral
+local spiralSpeed = 10 -- Speed of each tear
+local numSteps = 5     -- Total steps before resetting (controls how many tears make a full loop)
+
+local function shootBullet()
     local player = Isaac.GetPlayer(0)
-    local position = player.Position -- Get player's current position
-    local velocity = Vector(0, 0)    -- Default velocity
+    local position = player.Position
 
-    -- Set the player's rotation based on direction
-    if direction == "LEFT" then
-        velocity = Vector(-10, 0)
-        player:SetHeadDirection(Direction.LEFT, 5, true)
-    elseif direction == "UP" then
-        velocity = Vector(0, -10)
-        player:SetHeadDirection(Direction.UP, 5, true)
-    elseif direction == "RIGHT" then
-        velocity = Vector(10, 0)
-        player:SetHeadDirection(Direction.RIGHT, 5, true)
-    elseif direction == "DOWN" then
-        velocity = Vector(0, 10)
-        player:SetHeadDirection(Direction.DOWN, 5, true)
+    -- Calculate angle based on the current step
+    local angle = math.rad(spiralIndex * (360 / numSteps))
+
+    -- Compute velocity in the spiral direction
+    local velocity = Vector(math.cos(angle) * spiralSpeed, math.sin(angle) * spiralSpeed)
+
+    -- Fire the tear
+    local tear = player:FireTear(position, velocity, false, false, false)
+
+    -- Customize tear behavior
+    tear.Scale = 1.1
+    tear.FallingSpeed = -5
+    tear.FallingAcceleration = 0.5
+
+    -- Increment spiral index for the next shot
+    spiralIndex = spiralIndex + 1
+
+    -- Reset when completing a full loop
+    if spiralIndex > numSteps then
+        spiralIndex = 1
     end
-
-    -- Spawn a tear in the chosen direction
-    player:FireTear(position, velocity, false, false, false)
-
-
-    -- Trigger color reset (gradual)
-    colorResetTimer = colorResetDuration
 end
+
+
 
 local function handleAutoShoot()
     if #inputHistory > 0 then
