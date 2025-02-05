@@ -144,6 +144,7 @@ local function shootBullet(shootDirection)
         local tear = player:FireTear(position, newVelocity, false, false, false)
 
         -- Customize tear behavior
+        tear.CollisionDamage = player.Damage * 1.3
         tear.Scale = 1.1
         tear.FallingSpeed = -3
         tear.FallingAcceleration = 0.5
