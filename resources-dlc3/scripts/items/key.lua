@@ -1,6 +1,6 @@
 local game = Game()
 local KeyItem = {}
-
+KeyItem.ID = Isaac.GetItemIdByName("Wind-Up Key")
 -- Constants for shoot directions
 local SHOOT_DIRECTIONS = {
     [ButtonAction.ACTION_SHOOTLEFT] = "LEFT",
@@ -94,7 +94,7 @@ local function isCircling()
 end
 
 local autoShootTimer = 0 -- Timer for controlling shot intervals
-local shootCooldown = 2  -- Number of frames between each shot
+local shootCooldown = 3  -- Number of frames between each shot
 local isAutoShooting = false
 
 
@@ -181,56 +181,58 @@ local blueFactor
 function KeyItem:CheckShootingInputs()
     local player = Isaac.GetPlayer(0)
 
-    local inputDetected = false
-    local red
-    local green
-    local blue
-    -- Loop through input directions
-    for button, direction in pairs(SHOOT_DIRECTIONS) do
-        if Input.IsActionTriggered(button, player.ControllerIndex) then
-            table.insert(inputHistory, direction)
-            isCircling()
-            inputDetected = true
-            inactivityTimer = 0
-            isAutoShooting = false -- Disable auto-shoot since a key was pressed
+    if player:HasCollectible(KeyItem.ID) then
+        local inputDetected = false
+        local red
+        local green
+        local blue
+        -- Loop through input directions
+        for button, direction in pairs(SHOOT_DIRECTIONS) do
+            if Input.IsActionTriggered(button, player.ControllerIndex) then
+                table.insert(inputHistory, direction)
+                isCircling()
+                inputDetected = true
+                inactivityTimer = 0
+                isAutoShooting = false -- Disable auto-shoot since a key was pressed
+            end
         end
-    end
-    -- Update color values based on circling
-    redTintFactor = 0.1 * #inputHistory          -- Adjust the red tint intensity
-    greenFactor = 0.7765 - (0.1 * #inputHistory) -- Decrease green and blue values to enhance red
-    blueFactor = 0.7725 - (0.1 * #inputHistory)
-    print(#inputHistory)
-    -- Cap the red, green, and blue components
-    red = math.min(0.8902 + redTintFactor, 1) -- Cap red to a maximum of 1
-    green = math.max(greenFactor, 0.2)        -- Ensure green is at least 0.2
-    blue = math.max(blueFactor, 0.2)          -- Ensure blue is at least 0.2
+        -- Update color values based on circling
+        redTintFactor = 0.1 * #inputHistory     -- Adjust the red tint intensity
+        greenFactor = 1 - (0.1 * #inputHistory) -- Decrease green and blue values to enhance red
+        blueFactor = 1 - (0.1 * #inputHistory)
+        print(#inputHistory)
+        -- Cap the red, green, and blue components
+        red = math.min(0.8902 + redTintFactor, 1) -- Cap red to a maximum of 1
+        green = math.max(greenFactor, 0.2)        -- Ensure green is at least 0.2
+        blue = math.max(blueFactor, 0.2)          -- Ensure blue is at least 0.2
 
 
-    -- If no input was detected, update the inactivity timer
-    if not inputDetected then
-        inactivityTimer = inactivityTimer + 1
-    end
-
-    if inactivityTimer >= 30 then
-        if #inputHistory <= 3 then
-            red = 0.8902
-            green = 0.7765
-            blue = 0.7725
-        elseif not isAutoShooting then
-            isAutoShooting = true
+        -- If no input was detected, update the inactivity timer
+        if not inputDetected then
+            inactivityTimer = inactivityTimer + 1
         end
+
+        if inactivityTimer >= 30 then
+            if #inputHistory <= 3 then
+                red = 1
+                green = 1
+                blue = 1
+            elseif not isAutoShooting then
+                isAutoShooting = true
+            end
+        end
+
+        player:SetColor(Color(red, green, blue, 1.0, 0.0, 0.0, 0.0), 0, 0, false, false)
+
+        if isAutoShooting then
+            handleAutoShoot()
+        end
+
+
+
+        -- Increment auto-shoot timer every frame
+        autoShootTimer = autoShootTimer + 1
     end
-
-    player:SetColor(Color(red, green, blue, 1.0, 0.0, 0.0, 0.0), 0, 0, false, false)
-
-    if isAutoShooting then
-        handleAutoShoot()
-    end
-
-
-
-    -- Increment auto-shoot timer every frame
-    autoShootTimer = autoShootTimer + 1
 end
 
 return KeyItem

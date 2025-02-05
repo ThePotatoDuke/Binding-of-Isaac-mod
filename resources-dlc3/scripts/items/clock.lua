@@ -73,7 +73,11 @@ function ClockItem:OnBellChime(player)
                 entity:AddFreeze(EntityRef(player), 150)
             end
         end
+        MusicManager():Pause()
         sfx:Play(SOUND_FREEZE, 4)
+        startTimer(150, function()
+            MusicManager():Resume()
+        end)
     else
         startDeadBirdSequence()
     end
