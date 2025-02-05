@@ -1,4 +1,3 @@
-local game = Game()
 local KeyItem = {}
 KeyItem.ID = Isaac.GetItemIdByName("Wind-Up Key")
 -- Constants for shoot directions
@@ -30,8 +29,8 @@ local function getWrappedIndex(index)
     return wrappedIndex
 end
 local circleDirection
--- Function to check if input matches a circle pattern (either clockwise or counter-clockwise)
-local function isCircling()
+
+local function circlingCounter()
     local ctr = 1
     local historyCtr = 1
     local sequenceCtr = 1
@@ -184,7 +183,7 @@ function KeyItem:CheckShootingInputs()
         for button, direction in pairs(SHOOT_DIRECTIONS) do
             if Input.IsActionTriggered(button, player.ControllerIndex) then
                 table.insert(inputHistory, direction)
-                isCircling()
+                circlingCounter()
                 inputDetected = true
                 inactivityTimer = 0
                 isAutoShooting = false -- Disable auto-shoot since a key was pressed
@@ -194,7 +193,6 @@ function KeyItem:CheckShootingInputs()
         redTintFactor = 0.1 * #inputHistory     -- Adjust the red tint intensity
         greenFactor = 1 - (0.1 * #inputHistory) -- Decrease green and blue values to enhance red
         blueFactor = 1 - (0.1 * #inputHistory)
-        print(#inputHistory)
         -- Cap the red, green, and blue components
         red = math.min(0.8902 + redTintFactor, 1) -- Cap red to a maximum of 1
         green = math.max(greenFactor, 0.2)        -- Ensure green is at least 0.2
