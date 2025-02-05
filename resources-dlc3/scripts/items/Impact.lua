@@ -3,6 +3,7 @@ ImpactItem.ID = Isaac.GetItemIdByName("Sudden Impact")
 
 -- Table to track tears by their unique identifier
 local tears = {}
+local lastPosition
 
 function ImpactItem:scaleTear()
     for _, entity in ipairs(Isaac.GetRoomEntities()) do
@@ -14,7 +15,7 @@ function ImpactItem:scaleTear()
 
                 -- Check if the tear already exists in the table
                 for _, storedTear in ipairs(tears) do
-                    if storedTear == tearData then
+                    if storedTear.tearData == tearData then
                         tearExists = true
                         break
                     end
@@ -42,13 +43,12 @@ function ImpactItem:scaleTear()
 end
 
 function ImpactItem:tearDeath(tear) -- Now it's part of `ImpactItem`
-    local tearData = tear:GetData()
-
-    -- Find and remove the tear from the `tears` table
-    for i, storedTear in ipairs(tears) do
-        if storedTear == tearData then
-            table.remove(tears, i)
-            break
+    for _, storedTear in ipairs(tears) do
+        if storedTear.tearData == tear:GetData() then
+            if storedTear.isBoosted then
+                Game():MakeShockwave(tear.Position, 0.035, 0.025, 10)
+                break
+            end
         end
     end
 end

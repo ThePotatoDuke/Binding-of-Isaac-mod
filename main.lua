@@ -24,8 +24,9 @@ ClockMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
     ClockMod.Items.Impact:scaleTear()
 end)
 
-ClockMod:AddCallback(ModCallbacks.MC_POST_TEAR_DEATH, function(_, tear) -- Fixed argument list
-    ClockMod.Items.Impact:tearDeath(tear)                               -- Corrected function call using `:`
+ClockMod:AddCallback(ModCallbacks.MC_POST_TEAR_DEATH, function(_, tear)
+    -- Fixed argument list
+    ClockMod.Items.Impact:tearDeath(tear) -- Corrected function call using `:`
 end)
 
 return ClockMod
