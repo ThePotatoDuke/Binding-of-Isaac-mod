@@ -15,10 +15,6 @@ local inactivityTimer = 0 -- Timer for inactivity
 
 local CIRCLE_SEQUENCE = { "LEFT", "UP", "RIGHT", "DOWN" }
 
--- Variables to handle color reset over time
-local colorResetTimer = 0     -- Timer for color reset
-local colorResetDuration = 30 -- Duration (frames) for color to reset to normal
-
 local function getWrappedIndex(index)
     local minIndex = 1
     local maxIndex = #CIRCLE_SEQUENCE
@@ -155,9 +151,6 @@ local function shootBullet(shootDirection)
     if spiralIndex > numSteps then
         spiralIndex = 1
     end
-
-    -- Trigger color reset (gradual)
-    colorResetTimer = colorResetDuration
 end
 
 local function handleAutoShoot()
@@ -228,8 +221,6 @@ function KeyItem:CheckShootingInputs()
         if isAutoShooting then
             handleAutoShoot()
         end
-
-
 
         -- Increment auto-shoot timer every frame
         autoShootTimer = autoShootTimer + 1
