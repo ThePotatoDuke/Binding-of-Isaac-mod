@@ -9,9 +9,9 @@ function Schizophrenia:GetTearParent()
             -- print(entity:ToProjectile().SpawnerEntity:GetData())
             print(#hallucinations)
             for _, value in ipairs(hallucinations) do
-                if entity:ToProjectile().SpawnerEntity:GetData() == value:GetData() then
-                    print("hoowww")
-                    entity:AddEntityFlags(EntityFlag.FLAG_NO_KNOCKBACK | EntityFlag.FLAG_NO_PHYSICS_KNOCKBACK)
+                if entity:ToProjectile():SpawnerEntity() == value then
+                    entity.EntityCollisionClass = EntityCollisionClass.ENTCOLL_NONE
+                    entity.GridCollisionClass = EntityGridCollisionClass.GRIDCOLL_NONE
                     break
                 end
             end
