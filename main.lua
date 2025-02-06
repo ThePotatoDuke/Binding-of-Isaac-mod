@@ -5,7 +5,9 @@ local ClockMod = RegisterMod("Grandfather's Clock", 1)
 ClockMod.Items = {}
 ClockMod.Items.Clock = include("resources-dlc3.scripts.items.Clock")
 ClockMod.Items.Key = include("resources-dlc3.scripts.items.Key")
-ClockMod.Items.Impact = include("resources-dlc3.scripts.items.Impact")
+ClockMod.Items.Critical = include("resources-dlc3.scripts.items.Critical")
+ClockMod.Items.Schizophrenia = include("resources-dlc3.scripts.items.Schizophrenia")
+
 
 -- Add callbacks
 ClockMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
@@ -21,12 +23,21 @@ ClockMod:AddCallback(ModCallbacks.MC_POST_RENDER, function()
 end)
 
 ClockMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
-    ClockMod.Items.Impact:scaleTear()
+    ClockMod.Items.Critical:scaleTear()
 end)
 
-ClockMod:AddCallback(ModCallbacks.MC_POST_TEAR_DEATH, function(_, tear)
+ClockMod:AddCallback(ModCallbacks.MC_PRE_NPC_COLLISION, function(_, tear, collider, low)
     -- Fixed argument list
-    ClockMod.Items.Impact:tearDeath(tear) -- Corrected function call using `:`
+    ClockMod.Items.Critical:OnEnemyHit(tear, collider, low) -- Corrected function call using `:`
+end)
+ClockMod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, function(_, player, cacheFlag)
+    ClockMod.Items.Critical:onCache(player, cacheFlag)
 end)
 
+ClockMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
+    ClockMod.Items.Schizophrenia:DisableEnemyCollision()
+end)
+ClockMod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, function()
+    ClockMod.Items.Schizophrenia:OnNewRoom()
+end)
 return ClockMod

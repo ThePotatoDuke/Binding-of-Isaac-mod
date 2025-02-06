@@ -1,0 +1,26 @@
+local Schizophrenia = {}
+Schizophrenia.ID = Isaac.GetItemIdByName("Schizophrenia")
+
+function Schizophrenia:DisableEnemyCollision()
+    local player = Isaac.GetPlayer(0)
+    if player:HasCollectible(Schizophrenia.ID) then
+        for _, entity in ipairs(Isaac.GetRoomEntities()) do
+            if entity:IsVulnerableEnemy() then
+                entity.EntityCollisionClass = EntityCollisionClass.ENTCOLL_NONE    -- Disables collisions
+                entity.GridCollisionClass = EntityGridCollisionClass.GRIDCOLL_NONE -- Disables grid collisions
+            end
+        end
+    end
+end
+
+-- Reset enemy collisions when leaving the room
+function Schizophrenia:OnNewRoom()
+    for _, entity in ipairs(Isaac.GetRoomEntities()) do
+        if entity:IsVulnerableEnemy() then
+            entity.EntityCollisionClass = EntityCollisionClass.ENTCOLL_ALL
+            entity.GridCollisionClass = EntityGridCollisionClass.GRIDCOLL_GROUND
+        end
+    end
+end
+
+return Schizophrenia
