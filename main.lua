@@ -9,6 +9,8 @@ ClockMod.Items.Critical = include("resources-dlc3.scripts.items.Critical")
 ClockMod.Items.Schizophrenia = include("resources-dlc3.scripts.items.Schizophrenia")
 
 
+
+
 -- Add callbacks
 ClockMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
     ClockMod.Items.Clock:OnUpdate()
@@ -34,10 +36,12 @@ ClockMod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, function(_, player, cacheFl
     ClockMod.Items.Critical:onCache(player, cacheFlag)
 end)
 
-ClockMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
-    ClockMod.Items.Schizophrenia:DisableEnemyCollision()
-end)
+
 ClockMod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, function()
     ClockMod.Items.Schizophrenia:OnNewRoom()
 end)
+ClockMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
+    ClockMod.Items.Schizophrenia:GetTearParent()
+end)
+
 return ClockMod

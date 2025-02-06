@@ -1,10 +1,11 @@
 local criticalItem = {}
 criticalItem.ID = Isaac.GetItemIdByName("Critical Hit")
-local player = Isaac.GetPlayer(0)
 
 local tears = {} -- Table to track tears
 
 function criticalItem:scaleTear()
+    local player = Isaac.GetPlayer(0)
+
     if player:HasCollectible(criticalItem.ID) then
         for _, entity in ipairs(Isaac.GetRoomEntities()) do
             if entity.Type == EntityType.ENTITY_TEAR then
@@ -52,7 +53,7 @@ end
 
 function criticalItem:OnEnemyHit(e, c, l)
     for _, storedTear in ipairs(tears) do
-        if storedTear.index == c.Index and then
+        if storedTear.index == c.Index then
             if storedTear.isBoosted and e:IsVulnerableEnemy() then
                 Game():MakeShockwave(c.Position, 0.035, 0.025, 10)
                 break
