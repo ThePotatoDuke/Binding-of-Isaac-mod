@@ -44,10 +44,10 @@ end
 
 function criticalItem:onCache(player, cacheFlag)
     if player:HasCollectible(criticalItem.ID) then
-        if cacheFlag == CacheFlag.CACHE_RANGE then
-            player.TearRange = player.TearRange * 0.8
-            player.TearFallingAcceleration = player.TearFallingAcceleration
-        end
+        -- if cacheFlag == CacheFlag.CACHE_RANGE then
+        --     player.TearRange = player.TearRange * 0.8
+        --     player.TearFallingAcceleration = player.TearFallingAcceleration
+        -- end
     end
 end
 

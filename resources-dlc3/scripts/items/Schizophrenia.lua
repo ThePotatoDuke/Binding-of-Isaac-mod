@@ -9,7 +9,7 @@ function Schizophrenia:GetTearParent()
             local proj = entity:ToProjectile()
             local spawner = proj.SpawnerEntity
 
-            print(#hallucinations)
+
 
             if spawner then
                 for _, value in ipairs(hallucinations) do
@@ -37,13 +37,25 @@ function Schizophrenia:GetTearParent()
 
     -- If all vulnerable enemies in the room are hallucinations, remove all enemies
     if #vulnerableEnemies == 0 then
-        for _, entity in ipairs(hallucinations) do
-            entity:Kill() -- Kill the enemy
-        end
+        Schizophrenia:FadeOut(hallucinations)
+        -- for _, entity in ipairs(hallucinations) do
+        --     -- entity:Kill() -- Kill the enemy
+
+        -- end
     end
 
     -- Print the count of hallucinations and vulnerable enemies
     print(#hallucinations, #vulnerableEnemies)
+end
+
+function Schizophrenia:FadeOut(entities)
+    for _, entity in ipairs(entities) do
+        local currentAlpha = entity.Color.A
+        if currentAlpha <= 0 then
+            entity:Remove()
+        end
+        entity.Color = Color(entity.Color.R, entity.Color.G, entity.Color.B, currentAlpha - 0.1)
+    end
 end
 
 -- Reset enemy and tear collisions when transitioning to a new room
