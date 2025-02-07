@@ -109,12 +109,12 @@ function Schizophrenia:OnNewRoom()
                     if not exists then
                         entity.EntityCollisionClass = EntityCollisionClass.ENTCOLL_NONE
                         entity.GridCollisionClass = EntityGridCollisionClass
-                            .GRIDCOLL_NONE
+                            .GRIDCOLL_WALLS
                         table.insert(hallucinations, entity)
                     end
                 end
-            elseif entity:IsEnemy() and not entity:IsVulnerableEnemy() then
-                invinciCtr = invinciCtr + 1
+            elseif entity:IsInvincible() then
+                -- invinciCtr = invinciCtr + 1
             end
         end
     end
