@@ -64,7 +64,7 @@ function Schizophrenia:GetTearParent()
     end
 
     -- If all vulnerable enemies in the room are hallucinations, remove all enemies
-    if activeEnemyCtr == #hallucinations + invinciCtr then
+    if activeEnemyCtr <= #hallucinations + invinciCtr then
         Schizophrenia:FadeOut(hallucinations)
         -- for _, entity in ipairs(hallucinations) do
         --     -- entity:Kill() -- Kill the enemy
