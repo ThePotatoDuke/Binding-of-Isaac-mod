@@ -73,7 +73,7 @@ function Schizophrenia:GetTearParent()
     end
 
     -- Print the count of hallucinations and vulnerable enemies
-    print(#hallucinations, #vulnerableEnemies)
+    print(activeEnemyCtr, #hallucinations, invinciCtr)
 end
 
 function Schizophrenia:FadeOut(entities)
