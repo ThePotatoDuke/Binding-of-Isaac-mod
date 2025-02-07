@@ -2,6 +2,8 @@ local Schizophrenia = {}
 Schizophrenia.ID = Isaac.GetItemIdByName("Schizophrenia")
 local hallucinations = {} -- Table to track affected tears
 local invinciCtr = 0
+
+
 -- Disable enemy collisions with a random chance
 function Schizophrenia:GetTearParent()
     local activeEnemyCtr = 0
@@ -22,12 +24,32 @@ function Schizophrenia:GetTearParent()
                     if GetPtrHash(spawner) == GetPtrHash(value) then
                         print("hello")
                         proj:AddProjectileFlags(ProjectileFlags.CANT_HIT_PLAYER)
-                        Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.EFFECT_POOF, 0, entity.Position, Vector(0, 0),
-                            nil)
 
                         break
                     end
                 end
+            end
+        elseif entity:IsActiveEnemy(false) and entity.SpawnerEntity ~= nil then
+            local exists = false
+            for _, value in ipairs(hallucinations) do
+                if GetPtrHash(entity) == GetPtrHash(value) then
+                    exists = true
+
+                    break
+                end
+            end
+            local parentIsHallucination = false
+
+            for _, value in ipairs(hallucinations) do
+                if GetPtrHash(entity.SpawnerEntity) == GetPtrHash(value) then
+                    parentIsHallucination = true
+
+                    break
+                end
+            end
+            if not exists and parentIsHallucination then
+                invinciCtr = invinciCtr + 1
+                table.insert(hallucinations, entity)
             end
         end
     end
@@ -66,9 +88,11 @@ end
 
 -- Reset enemy and tear collisions when transitioning to a new room
 function Schizophrenia:OnNewRoom()
+    local player = Isaac.GetPlayer(0)
     hallucinations = {}
     invinciCtr = 0
-    local player = Isaac.GetPlayer(0)
+
+
     if player:HasCollectible(Schizophrenia.ID) then
         -- Iterate over all room entities
         for _, entity in ipairs(Isaac.GetRoomEntities()) do
