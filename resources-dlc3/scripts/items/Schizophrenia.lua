@@ -1,9 +1,15 @@
 local Schizophrenia = {}
 Schizophrenia.ID = Isaac.GetItemIdByName("Schizophrenia")
 local hallucinations = {} -- Table to track affected tears
-
+local invinciCtr = 0
 -- Disable enemy collisions with a random chance
 function Schizophrenia:GetTearParent()
+    local activeEnemyCtr = 0
+    for _, entity in ipairs(Isaac.GetRoomEntities()) do
+        if entity:IsActiveEnemy(false) then
+            activeEnemyCtr = activeEnemyCtr + 1
+        end
+    end
     for _, entity in ipairs(Isaac.GetRoomEntities()) do
         if entity.Type == EntityType.ENTITY_PROJECTILE then
             local proj = entity:ToProjectile()
@@ -36,7 +42,7 @@ function Schizophrenia:GetTearParent()
     end
 
     -- If all vulnerable enemies in the room are hallucinations, remove all enemies
-    if #vulnerableEnemies == 0 then
+    if activeEnemyCtr == #hallucinations + invinciCtr then
         Schizophrenia:FadeOut(hallucinations)
         -- for _, entity in ipairs(hallucinations) do
         --     -- entity:Kill() -- Kill the enemy
@@ -61,6 +67,7 @@ end
 -- Reset enemy and tear collisions when transitioning to a new room
 function Schizophrenia:OnNewRoom()
     hallucinations = {}
+    invinciCtr = 0
     local player = Isaac.GetPlayer(0)
     if player:HasCollectible(Schizophrenia.ID) then
         -- Iterate over all room entities
@@ -82,6 +89,8 @@ function Schizophrenia:OnNewRoom()
                         table.insert(hallucinations, entity)
                     end
                 end
+            elseif entity:IsEnemy() and not entity:IsVulnerableEnemy() then
+                invinciCtr = invinciCtr + 1
             end
         end
     end
