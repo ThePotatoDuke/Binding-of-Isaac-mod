@@ -109,7 +109,6 @@ function Schizophrenia:OnUpdate()
     if fading then
         Schizophrenia:FadeOut(hallucinations)
     end
-    print(#vulnerableEnemies)
 end
 
 function Schizophrenia:OnNewRoom()
