@@ -49,7 +49,7 @@ end)
 ClockMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function(_, entity)
     ClockMod.Items.Schizophrenia:OnUpdate(entity)
 end)
-ClockMod:AddCallback(ModCallbacks.MC_PRE_CHANGE_ROOM, function()
+ClockMod:AddCallback(ModCallbacks.MC_PRE_ROOM_EXIT, function(_, _, _)
     ClockMod.Items.Schizophrenia:OnNewRoom()
 end)
 

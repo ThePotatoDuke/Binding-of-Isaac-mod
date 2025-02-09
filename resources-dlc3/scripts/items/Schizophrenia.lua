@@ -79,7 +79,7 @@ local player = Isaac.GetPlayer(0)
 -- Reset enemy and tear collisions when transitioning to a new room
 function Schizophrenia:OnNpcInit(entity)
     if player:HasCollectible(Schizophrenia.ID) then
-        if entity:IsVulnerableEnemy() then
+        if entity:IsVulnerableEnemy() and entity.Type ~= EntityType.ENTITY_FIREPLACE and entity.Type ~= EntityType.ENTITY_BOMB then
             if entity.SpawnerEntity then
                 local parentIsHallucination = false
                 for _, hallucination in ipairs(hallucinations) do
@@ -109,8 +109,22 @@ function Schizophrenia:OnNpcInit(entity)
 end
 
 function Schizophrenia:OnProjectileInit(entity)
-    if entity.SpawnerEntity and hallucinations[entity.SpawnerEntity] then
-        entity:AddProjectileFlags(ProjectileFlags.CANT_HIT_PLAYER)
+    local parentIsHallucination = false
+    for _, hallucination in ipairs(hallucinations) do
+        if GetPtrHash(hallucination) == GetPtrHash(entity.SpawnerEntity) then
+            parentIsHallucination = true
+            break
+        end
+    end
+    if parentIsHallucination then
+        if entity.Type == EntityType.ENTITY_PROJECTILE then
+            local projectile = entity:ToProjectile()
+            projectile:AddProjectileFlags(ProjectileFlags.CANT_HIT_PLAYER)
+        elseif entity.Type == EntityType.ENTITY_EFFECT then
+            if entity.Variant == EffectVariant.CREEP_GREEN then
+                -- entity:AddEntityFlags(EntityFlag.flag_no)
+            end
+        end
     end
 end
 
@@ -148,12 +162,13 @@ function Schizophrenia:OnEntityKill(entity)
     end
 
     -- Start fading hallucinations if no vulnerable enemies remain
-    if #vulnerableEnemies == 0 and not fading then
-        fading = true
-    end
 end
 
 function Schizophrenia:OnUpdate()
+    if #vulnerableEnemies == 0 and not fading then
+        fading = true
+    end
+
     if fading then
         Schizophrenia:FadeOut(hallucinations)
     end
@@ -162,6 +177,7 @@ end
 
 function Schizophrenia:OnNewRoom()
     vulnerableEnemies = {}
+    fading = false
 end
 
 return Schizophrenia
