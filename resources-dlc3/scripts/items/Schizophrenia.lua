@@ -96,10 +96,19 @@ function Schizophrenia:OnNpcInit(entity)
             else
                 local rng = player:GetCollectibleRNG(Schizophrenia.ID)
                 local roll = rng:RandomFloat()
-                if roll < 0.50 then
-                    table.insert(hallucinations, entity)
-                    entity.EntityCollisionClass = EntityCollisionClass.ENTCOLL_NONE
-                    entity.GridCollisionClass = GridCollisionClass.COLLISION_NONE
+                if roll < 0.20 then
+                    if entity:IsBoss() then
+                        local roll = rng:RandomFloat()
+                        if roll < 0.5 then
+                            table.insert(hallucinations, entity)
+                            entity.EntityCollisionClass = EntityCollisionClass.ENTCOLL_NONE
+                            entity.GridCollisionClass = GridCollisionClass.COLLISION_NONE
+                        end
+                    else
+                        table.insert(hallucinations, entity)
+                        entity.EntityCollisionClass = EntityCollisionClass.ENTCOLL_NONE
+                        entity.GridCollisionClass = GridCollisionClass.COLLISION_NONE
+                    end
                 else
                     table.insert(vulnerableEnemies, entity)
                 end
@@ -122,7 +131,7 @@ function Schizophrenia:OnProjectileInit(entity)
             projectile:AddProjectileFlags(ProjectileFlags.CANT_HIT_PLAYER)
         elseif entity.Type == EntityType.ENTITY_EFFECT then
             if entity.Variant == EffectVariant.CREEP_GREEN then
-                -- entity:AddEntityFlags(EntityFlag.flag_no)
+                entity:AddEntityFlags(EntityFlag.FLAG_NO_QUERY)
             end
         end
     end
@@ -138,7 +147,7 @@ function Schizophrenia:FadeOut(entities)
 
         if currentAlpha > 0 then
             allFaded = false -- At least one entity is still fading
-            entity.Color = Color(entity.Color.R, entity.Color.G, entity.Color.B, math.max(0, currentAlpha - 0.1))
+            entity.Color = Color(entity.Color.R, entity.Color.G, entity.Color.B, math.max(0, currentAlpha - 0.05))
         end
 
         if currentAlpha <= 0 then
