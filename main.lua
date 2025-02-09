@@ -37,11 +37,20 @@ ClockMod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, function(_, player, cacheFl
 end)
 
 
-ClockMod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, function()
-    ClockMod.Items.Schizophrenia:OnNewRoom()
+ClockMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, function(_, entity)
+    ClockMod.Items.Schizophrenia:OnNpcInit(entity)
 end)
-ClockMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
-    ClockMod.Items.Schizophrenia:GetTearParent()
+ClockMod:AddCallback(ModCallbacks.MC_POST_PROJECTILE_INIT, function(_, entity)
+    ClockMod.Items.Schizophrenia:OnProjectileInit(entity)
+end)
+ClockMod:AddCallback(ModCallbacks.MC_POST_ENTITY_KILL, function(_, entity)
+    ClockMod.Items.Schizophrenia:OnEntityKill(entity)
+end)
+ClockMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function(_, entity)
+    ClockMod.Items.Schizophrenia:OnUpdate(entity)
+end)
+ClockMod:AddCallback(ModCallbacks.MC_PRE_ROOM_EXIT, function(_, _, _)
+    ClockMod.Items.Schizophrenia:OnNewRoom()
 end)
 
 return ClockMod
