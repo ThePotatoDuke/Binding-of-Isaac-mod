@@ -26,12 +26,12 @@ ClockMod:AddCallback(ModCallbacks.MC_POST_RENDER, function()
     ClockMod.Items.Wifi:OnRender()
 end)
 
-ClockMod:AddCallback(ModCallbacks.MC_PRE_NPC_COLLISION, function(_, tear, collider, low)
+ClockMod:AddCallback(ModCallbacks.MC_PRE_TEAR_COLLISION, function(_, tear, collider, low)
     ClockMod.Items.Critical:OnEnemyHit(tear, collider, low)
 end)
 
 ClockMod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, function(_, player, cacheFlag)
-    ClockMod.Items.Critical:onCache(player, cacheFlag)
+    ClockMod.Items.Critical:OnCache(player, cacheFlag)
     ClockMod.Items.Wifi:EvaluateCache(player, cacheFlag)
 end)
 
@@ -50,5 +50,11 @@ end)
 ClockMod:AddCallback(ModCallbacks.MC_PRE_ROOM_EXIT, function(_, _, _)
     ClockMod.Items.Schizophrenia:OnNewRoom()
 end)
+ClockMod:AddCallback(ModCallbacks.MC_POST_TEAR_INIT, function(_, tear)
+    ClockMod.Items.Critical:OnTearInit(tear)
+end)
+ClockMod:AddCallback(ModCallbacks.MC_ENTITY_TAKE_DMG, function(_, tear)
+    ClockMod.Items.Critical:OnEnemyHit(tear)
+end, EntityType.ENTITY_TEAR)
 
 return ClockMod
