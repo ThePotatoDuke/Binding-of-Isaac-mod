@@ -1,18 +1,18 @@
-local CricticalItem = {}
-CricticalItem.ID = Isaac.GetItemIdByName("Critical Hit")
+local Critical = {}
+Critical.ID = Isaac.GetItemIdByName("Critical Hit")
 
 local tears = {} -- Table to track tears
 
 -- Add tears to the table when they spawn
-function CricticalItem:OnTearInit(tear)
+function Critical:OnTearInit(tear)
     local player = tear.SpawnerEntity and tear.SpawnerEntity:ToPlayer()
-    if player and player:HasCollectible(CricticalItem.ID) then
+    if player and player:HasCollectible(Critical.ID) then
         table.insert(tears, { tear = tear, isBoosted = false })
     end
 end
 
 -- Scale tears that have fallen enough
-function CricticalItem:scaleTear()
+function Critical:scaleTear()
     for i, storedTear in ipairs(tears) do
         local tear = storedTear.tear
         if tear and tear:Exists() then
@@ -29,7 +29,7 @@ function CricticalItem:scaleTear()
 end
 
 -- Damage marked enemies when hit by boosted tears
-function CricticalItem:OnEnemyHit(e, c, l)
+function Critical:OnEnemyHit(e, c, l)
     for _, storedTear in ipairs(tears) do
         if storedTear.tear and GetPtrHash(storedTear.tear) == GetPtrHash(e) then
             if storedTear.isBoosted and c:IsVulnerableEnemy() then
@@ -40,7 +40,7 @@ function CricticalItem:OnEnemyHit(e, c, l)
     end
 end
 
-function CricticalItem:OnCache(player, cacheFlags)
+function Critical:OnCache(player, cacheFlags)
     if cacheFlags & CacheFlag.CACHE_RANGE ~= 0 then
         local stats = player:GetData().CriticalStats or {}
         stats.RangeMult = (stats.RangeMult or 1) * 0.8
@@ -50,4 +50,4 @@ function CricticalItem:OnCache(player, cacheFlags)
     end
 end
 
-return CricticalItem
+return Critical
