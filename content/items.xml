@@ -7,4 +7,6 @@
         gfx="critical_hit.png" quality="3" />
     <passive id="3" cache="" name="Schizophrenia" description="I am seeing things"
         gfx="schizo.png" quality="2" />
+    <passive id="4" cache="" name="Wifi" description="Online mode"
+        gfx="schizo.png" quality="2" />
 </items>

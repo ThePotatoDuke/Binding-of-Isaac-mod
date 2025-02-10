@@ -1,65 +1,53 @@
-local criticalItem = {}
-criticalItem.ID = Isaac.GetItemIdByName("Critical Hit")
+local Critical = {}
+Critical.ID = Isaac.GetItemIdByName("Critical Hit")
 
 local tears = {} -- Table to track tears
 
-function criticalItem:scaleTear()
-    local player = Isaac.GetPlayer(0)
+-- Add tears to the table when they spawn
+function Critical:OnTearInit(tear)
+    local player = tear.SpawnerEntity and tear.SpawnerEntity:ToPlayer()
+    if player and player:HasCollectible(Critical.ID) then
+        table.insert(tears, { tear = tear, isBoosted = false })
+    end
+end
 
-    if player:HasCollectible(criticalItem.ID) then
-        for _, entity in ipairs(Isaac.GetRoomEntities()) do
-            if entity.Type == EntityType.ENTITY_TEAR then
-                local tear = entity:ToTear()
-                if tear then
-                    -- tear.FallingSpeed = tear.FallingSpeed + 2 -- Controlled change
-                    print("Tear FallingSpeed:", tear.FallingSpeed)
-
-                    local tearExists = false
-                    for _, storedTear in ipairs(tears) do
-                        if storedTear.index == tear.Index then
-                            tearExists = true
-                            break
-                        end
-                    end
-
-                    if not tearExists then
-                        table.insert(tears, { index = tear.Index, isBoosted = false })
-                    end
-
-                    for _, storedTear in ipairs(tears) do
-                        if storedTear.index == tear.Index then
-                            if tear.Height > -12 and not storedTear.isBoosted then
-                                storedTear.isBoosted = true
-                                tear.CollisionDamage = tear.CollisionDamage * 1.5
-                                tear.Scale = tear.Scale * 1.4
-                            end
-                            break
-                        end
-                    end
-                end
+-- Scale tears that have fallen enough
+function Critical:scaleTear()
+    for i, storedTear in ipairs(tears) do
+        local tear = storedTear.tear
+        if tear and tear:Exists() then
+            if tear.Height > -10 and not storedTear.isBoosted then
+                storedTear.isBoosted = true
+                tear.CollisionDamage = tear.CollisionDamage * 1.5
+                tear.Scale = tear.Scale * 1.4
             end
+        else
+            -- Remove invalid tears
+            table.remove(tears, i)
         end
     end
 end
 
-function criticalItem:onCache(player, cacheFlag)
-    if player:HasCollectible(criticalItem.ID) then
-        -- if cacheFlag == CacheFlag.CACHE_RANGE then
-        --     player.TearRange = player.TearRange * 0.8
-        --     player.TearFallingAcceleration = player.TearFallingAcceleration
-        -- end
-    end
-end
-
-function criticalItem:OnEnemyHit(e, c, l)
+-- Damage marked enemies when hit by boosted tears
+function Critical:OnEnemyHit(e, c, l)
     for _, storedTear in ipairs(tears) do
-        if storedTear.index == c.Index then
-            if storedTear.isBoosted and e:IsVulnerableEnemy() then
-                Game():MakeShockwave(c.Position, 0.035, 0.025, 10)
+        if storedTear.tear and GetPtrHash(storedTear.tear) == GetPtrHash(e) then
+            if storedTear.isBoosted and c:IsVulnerableEnemy() then
+                Game():MakeShockwave(e.Position, 0.024, 0.015, 10)
                 break
             end
         end
     end
 end
 
-return criticalItem
+function Critical:OnCache(player, cacheFlags)
+    if cacheFlags & CacheFlag.CACHE_RANGE ~= 0 then
+        local stats = player:GetData().CriticalStats or {}
+        stats.RangeMult = (stats.RangeMult or 1) * 0.8
+        player:GetData().CriticalStats = stats
+        player.TearRange = player.TearRange * stats.RangeMult
+        player.TearFallingSpeed = player.TearFallingSpeed + 1
+    end
+end
+
+return Critical

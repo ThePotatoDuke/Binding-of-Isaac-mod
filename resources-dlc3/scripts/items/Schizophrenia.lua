@@ -2,10 +2,11 @@ local Schizophrenia = {}
 Schizophrenia.ID = Isaac.GetItemIdByName("Schizophrenia")
 local hallucinations = {} -- Table to track affected tears
 local vulnerableEnemies = {}
-local player = Isaac.GetPlayer(0)
 
 
 function Schizophrenia:OnNpcInit(entity)
+    local player = Isaac.GetPlayer(0)
+
     if player:HasCollectible(Schizophrenia.ID) then
         if entity:IsVulnerableEnemy() and entity.Type ~= EntityType.ENTITY_FIREPLACE and entity.Type ~= EntityType.ENTITY_BOMB then
             if entity.SpawnerEntity then
@@ -24,7 +25,7 @@ function Schizophrenia:OnNpcInit(entity)
             else
                 local rng = player:GetCollectibleRNG(Schizophrenia.ID)
                 local roll = rng:RandomFloat()
-                if roll < 0.20 then
+                if roll < 0.50 then
                     if entity:IsBoss() then
                         local roll = rng:RandomFloat()
                         if roll < 0.5 then
@@ -109,7 +110,6 @@ function Schizophrenia:OnUpdate()
     if fading then
         Schizophrenia:FadeOut(hallucinations)
     end
-    print(#vulnerableEnemies)
 end
 
 function Schizophrenia:OnNewRoom()
