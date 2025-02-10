@@ -11,17 +11,34 @@ function WifiItem:OnRender()
         local frame
 
 
-        if distance < 40 then
+        if distance < 50 then
             frame = 0
-        elseif distance < 90 then
+        elseif distance < 100 then
             frame = 1
-        else
+        elseif distance < 180 then
             frame = 2
+        else
+            frame = 3
         end
 
         -- Set the sprite frame and render
         sprite:SetFrame("Connection", frame)
         sprite:Render(pos - Vector(0, 25), Vector.Zero, Vector.Zero)
+        player:AddCacheFlags(CacheFlag.CACHE_DAMAGE)
+        player:EvaluateItems()
+    end
+end
+
+function WifiItem:EvaluateCache(player, cacheFlag)
+    if cacheFlag == CacheFlag.CACHE_DAMAGE then
+        local distance = player.Position:Distance(selectedPosition or Vector.Zero)
+        if distance < 50 then
+            player.Damage = player.Damage * 1.5
+        elseif distance < 100 then
+            player.Damage = player.Damage * 1.3
+        elseif distance < 180 then
+            player.Damage = player.Damage * 1.2
+        end
     end
 end
 

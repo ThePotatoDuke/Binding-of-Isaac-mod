@@ -32,6 +32,7 @@ end)
 
 ClockMod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, function(_, player, cacheFlag)
     ClockMod.Items.Critical:onCache(player, cacheFlag)
+    ClockMod.Items.Wifi:EvaluateCache(player, cacheFlag)
 end)
 
 ClockMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, function(_, entity)
