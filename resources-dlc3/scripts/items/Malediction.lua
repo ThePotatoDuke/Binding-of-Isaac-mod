@@ -1,0 +1,3 @@
+local Malediction = {}
+
+return Malediction
