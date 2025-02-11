@@ -22,6 +22,7 @@ function Schizophrenia:OnNpcInit(entity)
                 end
                 if parentIsHallucination then
                     table.insert(hallucinations, entity)
+                    entity:GetData().isHallucination = true
                     entity.EntityCollisionClass = EntityCollisionClass.ENTCOLL_NONE
                     entity.GridCollisionClass = GridCollisionClass.COLLISION_NONE
                 end
@@ -33,11 +34,13 @@ function Schizophrenia:OnNpcInit(entity)
                         local roll = rng:RandomFloat()
                         if roll < 0.5 then
                             table.insert(hallucinations, entity)
+                            entity:GetData().isHallucination = true
                             entity.EntityCollisionClass = EntityCollisionClass.ENTCOLL_NONE
                             entity.GridCollisionClass = GridCollisionClass.COLLISION_NONE
                         end
                     else
                         table.insert(hallucinations, entity)
+                        entity:GetData().isHallucination = true
                         entity.EntityCollisionClass = EntityCollisionClass.ENTCOLL_NONE
                         entity.GridCollisionClass = GridCollisionClass.COLLISION_NONE
                     end
@@ -131,6 +134,16 @@ function Schizophrenia:OnNewRoom()
     vulnerableEnemies = {}
     hallucinations = {}
     fading = false
+end
+
+function Schizophrenia:OnRender()
+    for _, value in ipairs(Isaac.GetRoomEntities()) do
+        if value.Type == EntityType.ENTITY_EFFECT
+            and value.SpawnerEntity
+            and value.SpawnerEntity:GetData().isHallucination then
+            value:Remove()
+        end
+    end
 end
 
 return Schizophrenia

@@ -25,6 +25,7 @@ end)
 ClockMod:AddCallback(ModCallbacks.MC_POST_RENDER, function()
     ClockMod.Items.Key:CheckShootingInputs()
     ClockMod.Items.Wifi:OnRender()
+    ClockMod.Items.Schizophrenia:OnRender()
 end)
 
 ClockMod:AddCallback(ModCallbacks.MC_PRE_TEAR_COLLISION, function(_, tear, collider, low)
