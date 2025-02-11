@@ -11,5 +11,5 @@
         gfx="schizo.png" quality="2" />
     <active id="5" name="Malediction" gfx="schizo.png" description="A sigil of suffering"
         quality="3"
-        maxcharges="1" chargetype="normal"></active>
+        maxcharges="1" chargetype="normal" />
 </items>

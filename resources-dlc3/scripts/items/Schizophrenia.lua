@@ -9,7 +9,7 @@ function Schizophrenia:OnNpcInit(entity)
 
     if player:HasCollectible(Schizophrenia.ID) then
         if entity:IsVulnerableEnemy() and entity.Type ~= EntityType.ENTITY_FIREPLACE and entity.Type ~= EntityType.ENTITY_BOMB then
-            if entity.SpawnerEntity then
+            if entity.SpawnerEntity ~= nil then
                 local parentIsHallucination = false
                 for _, hallucination in ipairs(hallucinations) do
                     if GetPtrHash(hallucination) == GetPtrHash(entity.SpawnerEntity) then
@@ -38,7 +38,7 @@ function Schizophrenia:OnNpcInit(entity)
                         entity.EntityCollisionClass = EntityCollisionClass.ENTCOLL_NONE
                         entity.GridCollisionClass = GridCollisionClass.COLLISION_NONE
                     end
-                else
+                elseif entity:HasEntityFlags(EntityFlag.FLAG_NO_STATUS_EFFECTS) then
                     table.insert(vulnerableEnemies, entity)
                 end
             end
@@ -69,9 +69,10 @@ end
 local fading = false -- Flag to track whether fade-out is active
 
 function Schizophrenia:FadeOut(entities)
-    local allFaded = true -- Track if all entities are fully faded
+    local allFaded = true       -- Track if all entities are fully faded
 
-    for _, entity in ipairs(entities) do
+    for i = #entities, 1, -1 do -- Iterate in reverse to safely remove elements
+        local entity = entities[i]
         local currentAlpha = entity.Color.A
 
         if currentAlpha > 0 then
@@ -80,6 +81,7 @@ function Schizophrenia:FadeOut(entities)
         end
 
         if currentAlpha <= 0 then
+            table.remove(entities, i) -- Remove from hallucinations table
             entity:Remove()
         end
     end
@@ -106,7 +108,7 @@ function Schizophrenia:OnUpdate()
     if #vulnerableEnemies == 0 and not fading then
         fading = true
     end
-
+    print(#hallucinations)
     if fading then
         Schizophrenia:FadeOut(hallucinations)
     end
