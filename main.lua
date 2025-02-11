@@ -30,6 +30,7 @@ end)
 
 ClockMod:AddCallback(ModCallbacks.MC_PRE_TEAR_COLLISION, function(_, tear, collider, low)
     ClockMod.Items.Critical:OnEnemyHit(tear, collider, low)
+    ClockMod.Items.Malediction:OnEnemyHit(tear, collider, low)
 end)
 
 ClockMod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, function(_, player, cacheFlag)
@@ -62,6 +63,12 @@ end)
 ClockMod:AddCallback(ModCallbacks.MC_ENTITY_TAKE_DMG, function(_, tear)
     ClockMod.Items.Critical:OnEnemyHit(tear)
 end, EntityType.ENTITY_TEAR)
+
+local malediction = Isaac.GetItemIdByName("Malediction")
+ClockMod:AddCallback(ModCallbacks.MC_USE_ITEM, function()
+    ClockMod.Items.Malediction:OnItemUse()
+end, malediction)
+
 
 
 return ClockMod
