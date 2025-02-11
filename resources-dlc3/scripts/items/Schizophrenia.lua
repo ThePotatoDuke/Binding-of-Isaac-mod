@@ -2,6 +2,9 @@ local Schizophrenia = {}
 Schizophrenia.ID = Isaac.GetItemIdByName("Schizophrenia")
 local hallucinations = {} -- Table to track affected tears
 local vulnerableEnemies = {}
+local WAIT_TIMER = 10
+local FADE_CONSTANT = 0.08
+local timer = WAIT_TIMER
 
 
 function Schizophrenia:OnNpcInit(entity)
@@ -38,7 +41,7 @@ function Schizophrenia:OnNpcInit(entity)
                         entity.EntityCollisionClass = EntityCollisionClass.ENTCOLL_NONE
                         entity.GridCollisionClass = GridCollisionClass.COLLISION_NONE
                     end
-                elseif entity:HasEntityFlags(EntityFlag.FLAG_NO_STATUS_EFFECTS) then
+                elseif not entity:HasEntityFlags(EntityFlag.FLAG_NO_STATUS_EFFECTS) then
                     table.insert(vulnerableEnemies, entity)
                 end
             end
@@ -77,7 +80,8 @@ function Schizophrenia:FadeOut(entities)
 
         if currentAlpha > 0 then
             allFaded = false -- At least one entity is still fading
-            entity.Color = Color(entity.Color.R, entity.Color.G, entity.Color.B, math.max(0, currentAlpha - 0.05))
+            entity.Color = Color(entity.Color.R, entity.Color.G, entity.Color.B,
+                math.max(0, currentAlpha - FADE_CONSTANT))
         end
 
         if currentAlpha <= 0 then
@@ -97,6 +101,7 @@ function Schizophrenia:OnEntityKill(entity)
     for i, v in ipairs(vulnerableEnemies) do
         if GetPtrHash(v) == GetPtrHash(entity) then
             table.remove(vulnerableEnemies, i)
+
             break
         end
     end
@@ -105,17 +110,26 @@ function Schizophrenia:OnEntityKill(entity)
 end
 
 function Schizophrenia:OnUpdate()
+    -- Check if there are no vulnerable enemies and the timer has not been started yet
     if #vulnerableEnemies == 0 and not fading then
-        fading = true
+        timer = timer - 1
+    elseif #vulnerableEnemies ~= 0 then
+        timer = WAIT_TIMER
     end
-    print(#hallucinations)
-    if fading then
+
+    -- If fading is true, handle the fade out logic
+    if timer == 0 then
+        fading = true
         Schizophrenia:FadeOut(hallucinations)
+    elseif timer < 0 then
+        timer = WAIT_TIMER
     end
 end
 
 function Schizophrenia:OnNewRoom()
+    timer = WAIT_TIMER
     vulnerableEnemies = {}
+    hallucinations = {}
     fading = false
 end
 
