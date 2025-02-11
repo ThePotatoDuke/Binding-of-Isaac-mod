@@ -51,7 +51,7 @@ end
 
 function Malediction:OnEnemyHit(t, c, l)
     -- Check if the tear has the Malediction flag set
-    if t:GetEntityFlags() & TEAR_FLAG_MALEDICTION ~= 0 and not t:HasEntityFlags(EntityFlag) then
+    if (t:GetEntityFlags() & TEAR_FLAG_MALEDICTION ~= 0) and not (c:GetEntityFlags() & ENEMY_FLAG_MALEDICTION ~= 0) then
         print("pre collision flag " .. c:GetEntityFlags())
 
         -- Add the Malediction enemy flag to the enemy
