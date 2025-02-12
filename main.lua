@@ -56,5 +56,8 @@ end)
 ClockMod:AddCallback(ModCallbacks.MC_ENTITY_TAKE_DMG, function(_, tear)
     ClockMod.Items.Critical:OnEnemyHit(tear)
 end, EntityType.ENTITY_TEAR)
-
+local malediction = Isaac.GetItemIdByName("Malediction")
+ClockMod:AddCallback(ModCallbacks.MC_USE_ITEM, function(_, collectibleType, rng, player)
+    ClockMod.Items.Malediction:OnItemUse(player)
+end, malediction)
 return ClockMod
