@@ -8,7 +8,11 @@ function Schizophrenia:OnNpcInit(entity)
     local player = Isaac.GetPlayer(0)
 
     if player:HasCollectible(Schizophrenia.ID) then
-        if entity:IsVulnerableEnemy() and entity.Type ~= EntityType.ENTITY_FIREPLACE and entity.Type ~= EntityType.ENTITY_BOMB then
+        if entity:IsVulnerableEnemy() and not (entity.Type == EntityType.ENTITY_FIREPLACE or entity.Type == EntityType.ENTITY_BOMB
+                or entity.Type == EntityType.ENTITY_SPIKEBALL or entity.Type == EntityType.ENTITY_POKY or entity.Type == EntityType.ENTITY_WALL_HUGGER or
+                entity.Type == EntityType.ENTITY_MOCKULUS or entity.Type == EntityType.ENTITY_BOMB_GRIMACE or entity.Type == EntityType.ENTITY_QUAKE_GRIMACE or
+                entity.Type == EntityType.ENTITY_BALL_AND_CHAIN or entity.Type == EntityType.ENTITY_GRUDGE or
+                entity.Type == EntityType.ENTITY_DUMMY) then
             if entity.SpawnerEntity then
                 local parentIsHallucination = false
                 for _, hallucination in ipairs(hallucinations) do
