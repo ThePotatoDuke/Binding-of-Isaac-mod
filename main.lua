@@ -14,6 +14,7 @@ ClockMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
     ClockMod.Items.Clock:OnUpdate()
     ClockMod.Items.Critical:scaleTear()
     ClockMod.Items.Schizophrenia:OnUpdate()
+    ClockMod.Items.Malediction:OnUpdate()
 end)
 
 ClockMod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, function()
@@ -28,6 +29,7 @@ end)
 
 ClockMod:AddCallback(ModCallbacks.MC_PRE_TEAR_COLLISION, function(_, tear, collider, low)
     ClockMod.Items.Critical:OnEnemyHit(tear, collider, low)
+    ClockMod.Items.Malediction:OnEnemyHit(tear, collider, low)
 end)
 
 ClockMod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, function(_, player, cacheFlag)
