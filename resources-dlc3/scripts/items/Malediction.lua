@@ -57,10 +57,18 @@ function Malediction:OnEnemyHit(t, c, l)
         -- Add the Malediction enemy flag to the enemy
         c:AddEntityFlags(ENEMY_FLAG_MALEDICTION)
 
-        -- Apply the green color to the enemy
-        c.Color = Color(0, 1, 0, 1) -- Green color
 
         print("post collision flag " .. c:GetEntityFlags())
+    end
+end
+
+function Malediction:OnUpdate()
+    for _, entity in ipairs(Isaac.GetRoomEntities()) do
+        if entity:GetEntityFlags() & ENEMY_FLAG_MALEDICTION ~= 0 then
+            entity.Color = Color(1, 0, 0, 1)
+        else
+            entity.Color = Color(1, 1, 1, 1)
+        end
     end
 end
 
@@ -77,6 +85,15 @@ function Malediction:OnItemUse(player)
     for _, entity in ipairs(Isaac.GetRoomEntities()) do
         if entity:GetEntityFlags() & ENEMY_FLAG_MALEDICTION ~= 0 then
             entity:TakeDamage(playerDamage * markedCtr, DamageFlag.DAMAGE_ACID, EntityRef(player), 0)
+            local effect
+            if markedCtr == 1 then
+                effect = EffectVariant.BLUE_FLAME
+            else
+            end
+            local effect = Isaac.Spawn(EntityType.ENTITY_EFFECT, effect, 0, entity.Position,
+                Vector(0, 0), player)
+            effect.Color = Color(1, 1, 1, 1)
+            entity:ClearEntityFlags(ENEMY_FLAG_MALEDICTION)
         end
     end
 end

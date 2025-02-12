@@ -15,6 +15,7 @@ ClockMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
     ClockMod.Items.Clock:OnUpdate()
     ClockMod.Items.Critical:scaleTear()
     ClockMod.Items.Schizophrenia:OnUpdate()
+    ClockMod.Items.Malediction:OnUpdate()
 end)
 
 ClockMod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, function()
