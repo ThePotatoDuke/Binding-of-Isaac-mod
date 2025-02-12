@@ -63,36 +63,49 @@ function Malediction:OnEnemyHit(t, c, l)
 end
 
 function Malediction:OnUpdate()
+    print("Malediction OnUpdate running")
     for _, entity in ipairs(Isaac.GetRoomEntities()) do
-        if entity:GetEntityFlags() & ENEMY_FLAG_MALEDICTION ~= 0 then
-            entity.Color = Color(1, 0, 0, 1)
+        if entity:HasEntityFlags(ENEMY_FLAG_MALEDICTION) then
+            if entity.Color.R ~= 1 or entity.Color.G ~= 0 or entity.Color.B ~= 0 then
+                entity.Color = Color(1, 0, 0, 1) -- Only change color if needed
+            end
         else
-            entity.Color = Color(1, 1, 1, 1)
+            if entity.Color.R ~= 1 or entity.Color.G ~= 1 or entity.Color.B ~= 1 then
+                entity.Color = Color(1, 1, 1, 1)
+            end
         end
     end
 end
 
 function Malediction:OnItemUse(player)
     local playerDamage = player.Damage
-    local markedCtr = 0
+    local markedEnemies = {}
 
+    -- Collect all marked enemies
     for _, entity in ipairs(Isaac.GetRoomEntities()) do
-        if entity:GetEntityFlags() & ENEMY_FLAG_MALEDICTION ~= 0 then
-            markedCtr = markedCtr + 1
+        if (entity:GetEntityFlags() & ENEMY_FLAG_MALEDICTION) ~= 0 then
+            table.insert(markedEnemies, entity)
         end
     end
 
-    for _, entity in ipairs(Isaac.GetRoomEntities()) do
-        if entity:GetEntityFlags() & ENEMY_FLAG_MALEDICTION ~= 0 then
+    local markedCtr = #markedEnemies -- Get total count of marked enemies
+
+    -- Apply damage all at once
+    if markedCtr > 0 then
+        for _, entity in ipairs(markedEnemies) do
             entity:TakeDamage(playerDamage * markedCtr, DamageFlag.DAMAGE_ACID, EntityRef(player), 0)
-            local effect
-            if markedCtr == 1 then
-                effect = EffectVariant.BLUE_FLAME
-            else
+
+            -- Choose effect
+            local effect = EffectVariant.BLUE_FLAME -- Default effect
+            if markedCtr > 1 then
+                effect = EffectVariant.LARGE_BLOOD_EXPLOSION
             end
-            local effect = Isaac.Spawn(EntityType.ENTITY_EFFECT, effect, 0, entity.Position,
-                Vector(0, 0), player)
-            effect.Color = Color(1, 1, 1, 1)
+
+            -- Spawn effect
+            local spawnedEffect = Isaac.Spawn(EntityType.ENTITY_EFFECT, effect, 0, entity.Position, Vector(0, 0), player)
+            spawnedEffect.Color = Color(1, 1, 1, 1)
+
+            -- Clear mark
             entity:ClearEntityFlags(ENEMY_FLAG_MALEDICTION)
         end
     end

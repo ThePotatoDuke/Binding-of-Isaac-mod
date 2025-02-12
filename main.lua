@@ -2,19 +2,21 @@
 local ClockMod = RegisterMod("Grandfather's Clock", 1)
 
 -- Use include instead of require to force reload every time
-ClockMod.Items = {}
-ClockMod.Items.Clock = include("resources-dlc3.scripts.items.Clock")
-ClockMod.Items.Key = include("resources-dlc3.scripts.items.Key")
-ClockMod.Items.Critical = include("resources-dlc3.scripts.items.Critical")
-ClockMod.Items.Schizophrenia = include("resources-dlc3.scripts.items.Schizophrenia")
-ClockMod.Items.Wifi = include("resources-dlc3.scripts.items.Wifi")
+ClockMod.Items = {
+    Clock = include("resources-dlc3.scripts.items.Clock"),
+    Key = include("resources-dlc3.scripts.items.Key"),
+    Critical = include("resources-dlc3.scripts.items.Critical"),
+    Schizophrenia = include("resources-dlc3.scripts.items.Schizophrenia"),
+    Wifi = include("resources-dlc3.scripts.items.Wifi"),
+    Malediction = include("resources-dlc3.scripts.items.Malediction")
+}
 
 -- Add callbacks
 ClockMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
-    ClockMod.Items.Clock:OnUpdate()
-    ClockMod.Items.Critical:scaleTear()
     ClockMod.Items.Schizophrenia:OnUpdate()
     ClockMod.Items.Malediction:OnUpdate()
+    ClockMod.Items.Clock:OnUpdate()
+    ClockMod.Items.Critical:scaleTear()
 end)
 
 ClockMod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, function()
@@ -52,9 +54,11 @@ end)
 ClockMod:AddCallback(ModCallbacks.MC_PRE_ROOM_EXIT, function(_, _, _)
     ClockMod.Items.Schizophrenia:OnNewRoom()
 end)
+
 ClockMod:AddCallback(ModCallbacks.MC_POST_TEAR_INIT, function(_, tear)
     ClockMod.Items.Critical:OnTearInit(tear)
 end)
+
 ClockMod:AddCallback(ModCallbacks.MC_POST_FIRE_TEAR, function(_, tear)
     ClockMod.Items.Critical:OnTearInit(tear)
     local player = tear.SpawnerEntity and tear.SpawnerEntity:ToPlayer()
@@ -62,11 +66,14 @@ ClockMod:AddCallback(ModCallbacks.MC_POST_FIRE_TEAR, function(_, tear)
         ClockMod.Items.Malediction:OnTearInit(tear, player)
     end
 end)
+
 ClockMod:AddCallback(ModCallbacks.MC_ENTITY_TAKE_DMG, function(_, tear)
     ClockMod.Items.Critical:OnEnemyHit(tear)
 end, EntityType.ENTITY_TEAR)
+
 local malediction = Isaac.GetItemIdByName("Malediction")
 ClockMod:AddCallback(ModCallbacks.MC_USE_ITEM, function(_, collectibleType, rng, player)
     ClockMod.Items.Malediction:OnItemUse(player)
 end, malediction)
+
 return ClockMod

@@ -103,6 +103,7 @@ function Schizophrenia:OnEntityKill(entity)
 end
 
 function Schizophrenia:OnUpdate()
+    print("Schizophrenia OnUpdate running")
     if #vulnerableEnemies == 0 and not fading then
         fading = true
     end
