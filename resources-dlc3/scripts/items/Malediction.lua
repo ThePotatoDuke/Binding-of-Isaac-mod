@@ -64,10 +64,19 @@ function Malediction:OnEnemyHit(t, c, l)
     end
 end
 
-function Malediction:OnItemUse()
-    for _, value in ipairs(Isaac.GetRoomEntities()) do
-        if value:GetEntityFlags() & ENEMY_FLAG_MALEDICTION ~= 0 then
-            value:Kill()
+function Malediction:OnItemUse(player)
+    local playerDamage = player.Damage
+    local markedCtr = 0
+
+    for _, entity in ipairs(Isaac.GetRoomEntities()) do
+        if entity:GetEntityFlags() & ENEMY_FLAG_MALEDICTION ~= 0 then
+            markedCtr = markedCtr + 1
+        end
+    end
+
+    for _, entity in ipairs(Isaac.GetRoomEntities()) do
+        if entity:GetEntityFlags() & ENEMY_FLAG_MALEDICTION ~= 0 then
+            entity:TakeDamage(playerDamage * markedCtr, DamageFlag.DAMAGE_ACID, EntityRef(player), 0)
         end
     end
 end
