@@ -131,6 +131,7 @@ function Schizophrenia:OnUpdate()
     elseif timer < 0 then
         timer = WAIT_TIMER
     end
+    print(#vulnerableEnemies)
 end
 
 function Schizophrenia:OnNewRoom()
