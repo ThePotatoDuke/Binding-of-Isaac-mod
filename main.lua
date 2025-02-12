@@ -55,6 +55,13 @@ end)
 ClockMod:AddCallback(ModCallbacks.MC_POST_TEAR_INIT, function(_, tear)
     ClockMod.Items.Critical:OnTearInit(tear)
 end)
+ClockMod:AddCallback(ModCallbacks.MC_POST_FIRE_TEAR, function(_, tear)
+    ClockMod.Items.Critical:OnTearInit(tear)
+    local player = tear.SpawnerEntity and tear.SpawnerEntity:ToPlayer()
+    if player then
+        ClockMod.Items.Malediction:OnTearInit(tear, player)
+    end
+end)
 ClockMod:AddCallback(ModCallbacks.MC_ENTITY_TAKE_DMG, function(_, tear)
     ClockMod.Items.Critical:OnEnemyHit(tear)
 end, EntityType.ENTITY_TEAR)
