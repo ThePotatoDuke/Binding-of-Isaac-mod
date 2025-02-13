@@ -1,13 +1,12 @@
 -- Register the mod at the start
 local ClockMod = RegisterMod("Grandfather's Clock", 1)
-
 -- Use include instead of require to force reload every time
 ClockMod.Items = {
     Clock = include("resources-dlc3.scripts.items.Clock"),
     Key = include("resources-dlc3.scripts.items.Key"),
     Critical = include("resources-dlc3.scripts.items.Critical"),
     Schizophrenia = include("resources-dlc3.scripts.items.Schizophrenia"),
-    Wifi = include("resources-dlc3.scripts.items.Wifi"),
+    FixedModem = include("resources-dlc3.scripts.items.FixedModem"),
     Malediction = include("resources-dlc3.scripts.items.Malediction")
 }
 
@@ -21,12 +20,12 @@ end)
 
 ClockMod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, function()
     ClockMod.Items.Clock:removeDeadBirds()
-    ClockMod.Items.Wifi:GetGridDistance()
+    ClockMod.Items.FixedModem:GetGridDistance()
 end)
 
 ClockMod:AddCallback(ModCallbacks.MC_POST_RENDER, function()
     ClockMod.Items.Key:CheckShootingInputs()
-    ClockMod.Items.Wifi:OnRender()
+    ClockMod.Items.FixedModem:OnRender()
 end)
 
 ClockMod:AddCallback(ModCallbacks.MC_PRE_TEAR_COLLISION, function(_, tear, collider, low)
@@ -36,7 +35,7 @@ end)
 
 ClockMod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, function(_, player, cacheFlag)
     ClockMod.Items.Critical:OnCache(player, cacheFlag)
-    ClockMod.Items.Wifi:EvaluateCache(player, cacheFlag)
+    ClockMod.Items.FixedModem:EvaluateCache(player, cacheFlag)
 end)
 
 ClockMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, function(_, entity)

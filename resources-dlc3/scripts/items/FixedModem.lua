@@ -1,12 +1,13 @@
-local WifiItem = {}
+local FixedModemItem = {}
 local selectedPosition
-WifiItem.ID = Isaac.GetItemIdByName("Wifi")
+FixedModemItem.ID = Isaac.GetItemIdByName("FixedModem")
 local sprite = Sprite()
 sprite:Load("gfx/ui/ConnectionBars.anm2", true)
-function WifiItem:OnRender()
+function FixedModemItem:OnRender()
+    print("rendering")
     for i = 0, Game():GetNumPlayers() - 1 do
         local player = Isaac.GetPlayer(i)
-        if player:HasCollectible(WifiItem.ID) then
+        if player:HasCollectible(FixedModemItem.ID) then
             local pos = Isaac.WorldToScreen(player.Position)
             if selectedPosition ~= nil then
                 local distance = player.Position:Distance(selectedPosition)
@@ -21,7 +22,7 @@ function WifiItem:OnRender()
                     frame = 3
                 end
                 sprite:SetFrame("Connection", frame)
-                sprite:Render(pos - Vector(0, 25), Vector.Zero, Vector.Zero)
+                sprite:Render(pos - Vector(0, 50), Vector.Zero, Vector.Zero)
                 player:AddCacheFlags(CacheFlag.CACHE_DAMAGE)
                 player:EvaluateItems()
             end
@@ -29,7 +30,7 @@ function WifiItem:OnRender()
     end
 end
 
-function WifiItem:EvaluateCache(player, cacheFlag)
+function FixedModemItem:EvaluateCache(player, cacheFlag)
     if cacheFlag == CacheFlag.CACHE_DAMAGE then
         local distance = player.Position:Distance(selectedPosition or Vector.Zero)
         if distance < 50 then
@@ -42,8 +43,8 @@ function WifiItem:EvaluateCache(player, cacheFlag)
     end
 end
 
-function WifiItem:GetGridDistance()
+function FixedModemItem:GetGridDistance()
     selectedPosition = Isaac.GetRandomPosition()
 end
 
-return WifiItem
+return FixedModemItem

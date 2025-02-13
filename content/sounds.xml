@@ -8,4 +8,12 @@
     <sound name="cuckoo_bell">
         <sample weight="1" path="cuckoo_bell.wav" />
     </sound>
+    <sound name="malediction">
+        <sample weight="1" path="malediction_01.wav" />
+        <sample weight="1" path="malediction_02.wav" />
+        <sample weight="1" path="malediction_03.wav" />
+        <sample weight="1" path="malediction_04.wav" />
+        <sample weight="1" path="malediction_05.wav" />
+        <sample weight="1" path="malediction_06.wav" />
+    </sound>
 </sounds>

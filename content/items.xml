@@ -7,9 +7,10 @@
         gfx="critical_hit.png" quality="3" />
     <passive id="3" cache="" name="Schizophrenia" description="I am seeing things"
         gfx="schizo.png" quality="2" />
-    <passive id="4" cache="" name="Wifi" description="Look for a connection"
-        gfx="schizo.png" quality="2" />
-    <active id="5" name="Malediction" gfx="schizo.png" description="A sigil of suffering"
+    <passive id="4" cache="" name="Fixed Modem" description="Find a stable connection"
+        gfx="fixed_modem.png" quality="2" />
+    <active id="5" cache="" name="Malediction" gfx="malediction.png"
+        description="A sigil of suffering"
         quality="3"
         maxcharges="1" chargetype="normal"></active>
 </items>

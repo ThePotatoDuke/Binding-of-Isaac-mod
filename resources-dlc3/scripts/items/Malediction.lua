@@ -1,11 +1,7 @@
--- Malediction item logic
-
 local Malediction = {}
-local TEAR_FLAG_MALEDICTION = 1 << 63
-local ENEMY_FLAG_MALEDICTION = 1 << 63
 
-
-
+local sfx = SFXManager()
+local SOUND_MALEDICTION = Isaac.GetSoundIdByName("malediction")
 
 -- Item ID (make sure to set the correct name)
 Malediction.ID = Isaac.GetItemIdByName("Malediction")
@@ -38,9 +34,8 @@ function Malediction:ApplySpecialTearEffect(tear)
     tear.Scale = 1.6
     tear.Color = Color(0.5, 0, 0.5, 1, 0, 0, 0) -- Dark purple color
 
-    print("Old tear flags:", tear.TearFlags)
-    tear:AddEntityFlags(TEAR_FLAG_MALEDICTION)
-    print("New tear flags:", tear.TearFlags)
+    local data = tear:GetData()
+    data.MaledictionTear = true
 end
 
 -- Helper function to track players separately
@@ -50,22 +45,22 @@ function GetPlayerIndex(player)
 end
 
 function Malediction:OnEnemyHit(t, c, l)
-    -- Check if the tear has the Malediction flag set
-    if (t:GetEntityFlags() & TEAR_FLAG_MALEDICTION ~= 0) and not (c:GetEntityFlags() & ENEMY_FLAG_MALEDICTION ~= 0) then
-        print("pre collision flag " .. c:GetEntityFlags())
+    local tearData = t:GetData()
+    local enemyData = c:GetData()
 
-        -- Add the Malediction enemy flag to the enemy
-        c:AddEntityFlags(ENEMY_FLAG_MALEDICTION)
+    if tearData.MaledictionTear and not enemyData.MaledictionMarked then
+        print("pre collision mark")
 
-
-        print("post collision flag " .. c:GetEntityFlags())
+        -- Mark the enemy
+        enemyData.MaledictionMarked = true
+        print("post collision mark")
     end
 end
 
 function Malediction:OnUpdate()
-    print("Malediction OnUpdate running")
     for _, entity in ipairs(Isaac.GetRoomEntities()) do
-        if entity:HasEntityFlags(ENEMY_FLAG_MALEDICTION) then
+        local data = entity:GetData()
+        if data.MaledictionMarked then
             if entity.Color.R ~= 1 or entity.Color.G ~= 0 or entity.Color.B ~= 0 then
                 entity.Color = Color(1, 0, 0, 1) -- Only change color if needed
             end
@@ -78,12 +73,14 @@ function Malediction:OnUpdate()
 end
 
 function Malediction:OnItemUse(player)
+    sfx:Play(SOUND_MALEDICTION, 3)
     local playerDamage = player.Damage
     local markedEnemies = {}
 
     -- Collect all marked enemies
     for _, entity in ipairs(Isaac.GetRoomEntities()) do
-        if (entity:GetEntityFlags() & ENEMY_FLAG_MALEDICTION) ~= 0 then
+        local data = entity:GetData()
+        if data.MaledictionMarked then
             table.insert(markedEnemies, entity)
         end
     end
@@ -92,21 +89,22 @@ function Malediction:OnItemUse(player)
 
     -- Apply damage all at once
     if markedCtr > 0 then
+        print(markedCtr)
         for _, entity in ipairs(markedEnemies) do
-            entity:TakeDamage(playerDamage * markedCtr, DamageFlag.DAMAGE_ACID, EntityRef(player), 0)
+            entity:TakeDamage(playerDamage * 1.5 * markedCtr, DamageFlag.DAMAGE_ACID, EntityRef(player), 0)
 
             -- Choose effect
-            local effect = EffectVariant.BLUE_FLAME -- Default effect
-            if markedCtr > 1 then
-                effect = EffectVariant.LARGE_BLOOD_EXPLOSION
-            end
+            local effect
 
-            -- Spawn effect
-            local spawnedEffect = Isaac.Spawn(EntityType.ENTITY_EFFECT, effect, 0, entity.Position, Vector(0, 0), player)
-            spawnedEffect.Color = Color(1, 1, 1, 1)
+            effect = EffectVariant.POOF02
+            local spawnedEffect = Isaac.Spawn(EntityType.ENTITY_EFFECT, effect, 0, entity.Position, Vector(0, 0),
+                player)
+            spawnedEffect.SpriteScale = Vector(0.5 * markedCtr, 0.5 * markedCtr)
+
+
 
             -- Clear mark
-            entity:ClearEntityFlags(ENEMY_FLAG_MALEDICTION)
+            entity:GetData().MaledictionMarked = nil
         end
     end
 end
