@@ -20,7 +20,7 @@ end)
 
 ClockMod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, function()
     ClockMod.Items.Clock:removeDeadBirds()
-    ClockMod.Items.FixedModem:GetGridDistance()
+    ClockMod.Items.FixedModem:SelectRandomPos()
 end)
 
 ClockMod:AddCallback(ModCallbacks.MC_POST_RENDER, function()
