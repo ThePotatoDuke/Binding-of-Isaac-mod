@@ -75,7 +75,7 @@ function ClockItem:OnBellChime(player)
         end
         MusicManager():Pause()
         sfx:Play(SOUND_FREEZE, 4)
-        startTimer(150, function()
+        startTimer(140, function()
             MusicManager():Resume()
         end)
     else
@@ -89,7 +89,7 @@ function ClockItem:OnUpdate()
         local player = Isaac.GetPlayer(i)
 
         if player:HasCollectible(ClockItem.ID) then
-            if game:GetFrameCount() % 300 == 0 then -- Reduced to 300 frames (10 sec) for testing
+            if game:GetFrameCount() % 1800 == 0 then --clock timer 1 min
                 ClockItem:OnBellChime(player)
             end
         end

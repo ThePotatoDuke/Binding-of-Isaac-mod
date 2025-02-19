@@ -102,9 +102,9 @@ local numSteps = 8     -- Total steps before resetting (controls how many tears 
 local function shootBullet(shootDirection)
     local player = Isaac.GetPlayer(0)
     local position = player.Position
+    local maxFireDelay = player.MaxFireDelay -- Get player's Tears stat
 
-    -- Calculate base velocity based on direction
-
+    -- Set head direction based on shootDirection
     if shootDirection == "LEFT" then
         player:SetHeadDirection(Direction.LEFT, 5, true)
     elseif shootDirection == "UP" then
@@ -119,30 +119,52 @@ local function shootBullet(shootDirection)
     if circleDirection == "CW" then
         directionMultiplier = -directionMultiplier
     end
+
     -- Spiral logic: Calculate offset angle
     local angle = math.rad(spiralIndex * (directionMultiplier * 360 / numSteps))
     local spiralOffset = Vector(math.cos(angle) * spiralSpeed, math.sin(angle) * spiralSpeed)
 
     -- Combine base direction with spiral movement
     local finalVelocity = spiralOffset
-
-    -- Fire the tear
     local baseVelocity = finalVelocity
-    local spreadAngle = 30 -- Adjust the spread of the tears (in degrees)
+    local spreadAngle = 30 -- Spread angle in degrees
 
-    for i = -1, 1 do
+
+    -- Determine the number of tears based on the player's Tears stat
+
+    local tearCount = 1
+    if maxFireDelay <= 6 then
+        tearCount = 3
+    elseif maxFireDelay <= 8 then
+        tearCount = 2
+    elseif maxFireDelay <= 10 then
+        tearCount = 1
+    end
+
+    print(tearCount)
+
+    -- Adjust shooting pattern based on tear count
+    local startOffset = (tearCount - 1) / 2         -- Ensures correct offsets
+    for i = -startOffset, startOffset do
+        if tearCount == 1 and i ~= 0 then break end -- Only shoot 1 tear if tearCount is 1
+
         -- Rotate the base velocity slightly for each tear
-        local angle = baseVelocity:GetAngleDegrees() + (i * spreadAngle)
-        local newVelocity = Vector.FromAngle(angle) * baseVelocity:Length()
+        local angleOffset = i * spreadAngle
+        local newVelocity = Vector.FromAngle(baseVelocity:GetAngleDegrees() + angleOffset) * baseVelocity:Length()
 
-        -- Fire the tear
-        local tear = player:FireTear(position, newVelocity, false, false, false)
-
-        -- Customize tear behavior
-        tear.CollisionDamage = player.Damage * 1.3
-        tear.Scale = 1.1
-        tear.FallingSpeed = -3
-        tear.FallingAcceleration = 0.5
+        if player:HasCollectible(CollectibleType.COLLECTIBLE_TECH_X) then
+            player:FireTechXLaser(player.Position, newVelocity, 15, player, 0.5)
+            -- adjust size and other properties as needed
+        elseif player:HasCollectible(CollectibleType.COLLECTIBLE_BRIMSTONE) then
+            player:FireBrimstone(newVelocity, player, 0.5)
+        else
+            -- Fire the tear
+            local tear = player:FireTear(position, newVelocity, false, false, false)
+            -- Customize tear behavior
+            tear.CollisionDamage = player.Damage * 0.8
+            tear.FallingSpeed = -3
+            tear.FallingAcceleration = 0.5
+        end
     end
 
     -- Increment spiral index for the next shot
@@ -150,6 +172,10 @@ local function shootBullet(shootDirection)
     if spiralIndex > numSteps then
         spiralIndex = 1
     end
+end
+
+function KeyItem:OnNewRoom()
+    inputHistory = {}
 end
 
 local function handleAutoShoot()
@@ -179,9 +205,12 @@ function KeyItem:CheckShootingInputs()
         local red
         local green
         local blue
+
+
+
         -- Loop through input directions
         for button, direction in pairs(SHOOT_DIRECTIONS) do
-            if Input.IsActionTriggered(button, player.ControllerIndex) then
+            if Input.IsActionTriggered(button, player.ControllerIndex) and not Game():IsPauseMenuOpen() then
                 table.insert(inputHistory, direction)
                 circlingCounter()
                 inputDetected = true
@@ -206,11 +235,14 @@ function KeyItem:CheckShootingInputs()
 
         if inactivityTimer >= 30 then
             if #inputHistory <= 3 then
+                inputHistory = {}
                 red = 1
                 green = 1
                 blue = 1
             elseif not isAutoShooting then
-                isAutoShooting = true
+                if not (Input.IsActionPressed(ButtonAction.ACTION_SHOOTLEFT, player.ControllerIndex) or Input.IsActionPressed(ButtonAction.ACTION_SHOOTDOWN, player.ControllerIndex) or Input.IsActionPressed(ButtonAction.ACTION_RIGHT, player.ControllerIndex) or Input.IsActionPressed(ButtonAction.ACTION_UP, player.ControllerIndex)) then
+                    isAutoShooting = true
+                end
             end
         end
 
@@ -218,6 +250,7 @@ function KeyItem:CheckShootingInputs()
 
         if isAutoShooting then
             handleAutoShoot()
+            player.FireDelay = player.MaxFireDelay
         end
 
         -- Increment auto-shoot timer every frame

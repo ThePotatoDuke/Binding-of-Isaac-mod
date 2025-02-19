@@ -18,8 +18,8 @@ function Critical:scaleTear()
         if tear and tear:Exists() then
             if tear.Height > -10 and not storedTear.isBoosted then
                 storedTear.isBoosted = true
-                tear.CollisionDamage = tear.CollisionDamage * 1.5
-                tear.Scale = tear.Scale * 1.4
+                tear.CollisionDamage = tear.CollisionDamage * 1.6
+                tear.Scale = tear.Scale * 1.3
             end
         else
             -- Remove invalid tears

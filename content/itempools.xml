@@ -1,0 +1,17 @@
+<ItemPools>
+    <Pool Name="treasure">
+        <Item Name="Wind-Up Key" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
+        <Item Name="Critical Hit" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
+    </Pool>
+    <Pool Name="boss">
+        <Item Name="Wind-Up Key" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
+        <Item Name="Fixed Modem" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
+        <Item Name="Grandfather's Clock" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
+    </Pool>
+    <Pool Name="secret">
+        <Item Name="Schizophrenia" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
+    </Pool>
+    <Pool Name="devil">
+        <Item Name="Malediction" Weight="1" DecreaseBy="2" RemoveOn="0.1" />
+    </Pool>
+</ItemPools>

@@ -1,16 +1,17 @@
-<items gfxroot="gfx/items/" version="1">
+<items gfxroot="gfx/items/" deathanm2="gfx/death items.anm2" version="1">
     <passive id="0" cache="" name="Grandfather's Clock" description="I can hear its chimes"
-        gfx="clock.png" quality="2" />
+        gfx="clock.png" quality="1" />
     <passive id="1" cache="" name="Wind-Up Key" description="Keep the gears turning..."
-        gfx="key.png" quality="2" />
+        gfx="key.png" quality="3" />
     <passive id="2" cache="range" name="Critical Hit" description="A moment of pure force"
-        gfx="critical_hit.png" quality="3" />
+        gfx="critical_hit.png" quality="4" />
     <passive id="3" cache="" name="Schizophrenia" description="I am seeing things"
-        gfx="schizo.png" quality="2" />
-    <passive id="4" cache="" name="Fixed Modem" description="Find a stable connection"
+        gfx="schizo.png" quality="3" />
+    <passive id="4" cache="" name="Fixed Modem" description="Keep a stable connection"
         gfx="fixed_modem.png" quality="2" />
     <active id="5" cache="" name="Malediction" gfx="malediction.png"
         description="A sigil of suffering"
         quality="3"
+        price="1"
         maxcharges="1" chargetype="normal"></active>
 </items>

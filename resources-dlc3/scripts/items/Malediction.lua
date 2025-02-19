@@ -1,7 +1,10 @@
 local Malediction = {}
-
+local Utils = require("utils") -- Require the utility module
 local sfx = SFXManager()
 local SOUND_MALEDICTION = Isaac.GetSoundIdByName("malediction")
+local sprite = Sprite()
+sprite:Load("gfx/ui/Mark.anm2", true)
+local maxCharge = Isaac.GetItemConfig():GetCollectible(Isaac.GetItemIdByName("Malediction")).MaxCharges
 
 -- Item ID (make sure to set the correct name)
 Malediction.ID = Isaac.GetItemIdByName("Malediction")
@@ -14,25 +17,28 @@ function Malediction:OnTearInit(tear, player)
     if player and player:GetActiveItem() == Malediction.ID then
         local playerIndex = GetPlayerIndex(player) -- Function to track multiple players
 
-        if not Malediction.TearCount[playerIndex] then
-            Malediction.TearCount[playerIndex] = 0
-        end
 
-        Malediction.TearCount[playerIndex] = Malediction.TearCount[playerIndex] + 1
-        print(Malediction.TearCount[playerIndex])
+        local charge = player:GetActiveCharge()
+        if charge == maxCharge then
+            if not Malediction.TearCount[playerIndex] then
+                Malediction.TearCount[playerIndex] = 0
+            end
 
-        -- Every 3rd tear, apply a special effect
-        if Malediction.TearCount[playerIndex] >= 3 then
-            print("inside")
-            Malediction.TearCount[playerIndex] = 0 -- Reset counter
-            Malediction:ApplySpecialTearEffect(tear)
+            Malediction.TearCount[playerIndex] = Malediction.TearCount[playerIndex] + 1
+
+
+            -- Every 3rd tear, apply a special effect
+            if Malediction.TearCount[playerIndex] >= 3 then
+                Malediction.TearCount[playerIndex] = 0 -- Reset counter
+                Malediction:ApplySpecialTearEffect(tear)
+            end
         end
     end
 end
 
 function Malediction:ApplySpecialTearEffect(tear)
-    tear.Scale = 1.6
-    tear.Color = Color(0.5, 0, 0.5, 1, 0, 0, 0) -- Dark purple color
+    tear.Scale = 1.2
+    tear.Color = Color(1, 0, 0, 1, 0, 0, 0) -- Dark purple color
 
     local data = tear:GetData()
     data.MaledictionTear = true
@@ -48,32 +54,24 @@ function Malediction:OnEnemyHit(t, c, l)
     local tearData = t:GetData()
     local enemyData = c:GetData()
 
-    if tearData.MaledictionTear and not enemyData.MaledictionMarked then
-        print("pre collision mark")
-
+    if tearData.MaledictionTear and not enemyData.MaledictionMarked and not Utils:IsIgnoredEntity(c) then
         -- Mark the enemy
         enemyData.MaledictionMarked = true
-        print("post collision mark")
     end
 end
 
-function Malediction:OnUpdate()
+function Malediction:OnRender()
     for _, entity in ipairs(Isaac.GetRoomEntities()) do
         local data = entity:GetData()
         if data.MaledictionMarked then
-            if entity.Color.R ~= 1 or entity.Color.G ~= 0 or entity.Color.B ~= 0 then
-                entity.Color = Color(1, 0, 0, 1) -- Only change color if needed
-            end
-        else
-            if entity.Color.R ~= 1 or entity.Color.G ~= 1 or entity.Color.B ~= 1 then
-                entity.Color = Color(1, 1, 1, 1)
-            end
+            sprite:SetFrame("mark", 0)
+            sprite:Render(Isaac.WorldToScreen(entity.Position) - Vector(0, 40), Vector.Zero, Vector.Zero)
         end
     end
 end
 
 function Malediction:OnItemUse(player)
-    sfx:Play(SOUND_MALEDICTION, 3)
+    sfx:Play(SOUND_MALEDICTION, 4)
     local playerDamage = player.Damage
     local markedEnemies = {}
 
@@ -89,9 +87,8 @@ function Malediction:OnItemUse(player)
 
     -- Apply damage all at once
     if markedCtr > 0 then
-        print(markedCtr)
         for _, entity in ipairs(markedEnemies) do
-            entity:TakeDamage(playerDamage * 1.5 * markedCtr, DamageFlag.DAMAGE_ACID, EntityRef(player), 0)
+            entity:TakeDamage(playerDamage * 1.8 * markedCtr, DamageFlag.DAMAGE_ACID, EntityRef(player), 0)
 
             -- Choose effect
             local effect
@@ -99,7 +96,7 @@ function Malediction:OnItemUse(player)
             effect = EffectVariant.POOF02
             local spawnedEffect = Isaac.Spawn(EntityType.ENTITY_EFFECT, effect, 0, entity.Position, Vector(0, 0),
                 player)
-            spawnedEffect.SpriteScale = Vector(0.5 * markedCtr, 0.5 * markedCtr)
+            spawnedEffect.SpriteScale = Vector(math.min(0.5 + 0.3 * markedCtr, 2), math.min(0.5 + 0.3 * markedCtr, 2))
 
 
 
