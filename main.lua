@@ -9,7 +9,8 @@ DukeMod.Items = {
     Critical = include("resources-dlc3.scripts.items.Critical"),
     Schizophrenia = include("resources-dlc3.scripts.items.Schizophrenia"),
     FixedModem = include("resources-dlc3.scripts.items.FixedModem"),
-    Malediction = include("resources-dlc3.scripts.items.Malediction")
+    Malediction = include("resources-dlc3.scripts.items.Malediction"),
+    Dyslexia = include("resources-dlc3.scripts.items.Dyslexia")
 }
 
 -- Add callbacks
@@ -37,8 +38,10 @@ DukeMod:AddCallback(ModCallbacks.MC_PRE_TEAR_COLLISION, function(_, tear, collid
 end)
 
 DukeMod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, function(_, player, cacheFlag)
+    print("item taken in main")
     DukeMod.Items.Critical:OnCache(player, cacheFlag)
     DukeMod.Items.FixedModem:EvaluateCache(player, cacheFlag)
+    DukeMod.Items.Dyslexia:EvaluateCache(player, cacheFlag)
 end)
 
 DukeMod:AddCallback(ModCallbacks.MC_POST_NPC_INIT, function(_, entity)
@@ -78,5 +81,6 @@ local malediction = Isaac.GetItemIdByName("Malediction")
 DukeMod:AddCallback(ModCallbacks.MC_USE_ITEM, function(_, collectibleType, rng, player)
     DukeMod.Items.Malediction:OnItemUse(player)
 end, malediction)
+
 
 return DukeMod

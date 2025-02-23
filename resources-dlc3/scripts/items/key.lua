@@ -206,8 +206,6 @@ function KeyItem:CheckShootingInputs()
         local green
         local blue
 
-
-
         -- Loop through input directions
         for button, direction in pairs(SHOOT_DIRECTIONS) do
             if Input.IsActionTriggered(button, player.ControllerIndex) and not Game():IsPauseMenuOpen() then
