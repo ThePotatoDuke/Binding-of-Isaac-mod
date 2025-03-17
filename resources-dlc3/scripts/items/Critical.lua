@@ -40,13 +40,21 @@ function Critical:OnEnemyHit(e, c, l)
     end
 end
 
+local game = Game()
 function Critical:OnCache(player, cacheFlags)
     if cacheFlags & CacheFlag.CACHE_RANGE ~= 0 then
-        local stats = player:GetData().CriticalStats or {}
-        stats.RangeMult = (stats.RangeMult or 1) * 0.8
-        player:GetData().CriticalStats = stats
-        player.TearRange = player.TearRange * stats.RangeMult
-        player.TearFallingSpeed = player.TearFallingSpeed + 1
+        local numPlayers = game:GetNumPlayers()
+        for i = 0, numPlayers - 1 do
+            local player = Isaac.GetPlayer(i)
+            if player:HasCollectible(Critical.ID) then
+                local stats = player:GetData().CriticalStats or {}
+                stats.RangeMult = (stats.RangeMult or 1) * 0.7
+                player:GetData().CriticalStats = stats
+                player.TearRange = player.TearRange * stats.RangeMult
+                player.TearFallingSpeed = player.TearFallingSpeed + 1
+                break
+            end
+        end
     end
 end
 

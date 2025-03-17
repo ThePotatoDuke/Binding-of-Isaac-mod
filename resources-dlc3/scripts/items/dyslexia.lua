@@ -51,7 +51,7 @@ local function modifierCallback(descObj)
     return descObj
 end
 
-local DYSLEXIA_TEARS = 0.6 -- Lower value for a smaller increase
+local DYSLEXIA_TEARS = 0.8 -- Lower value for a smaller increase
 
 
 local function toTearsPerSecond(maxFireDelay)

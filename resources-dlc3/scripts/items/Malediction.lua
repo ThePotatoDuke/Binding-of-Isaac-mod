@@ -28,7 +28,7 @@ function Malediction:OnTearInit(tear, player)
 
 
             -- Every 3rd tear, apply a special effect
-            if Malediction.TearCount[playerIndex] >= 3 then
+            if Malediction.TearCount[playerIndex] >= 2 then
                 Malediction.TearCount[playerIndex] = 0 -- Reset counter
                 Malediction:ApplySpecialTearEffect(tear)
             end
