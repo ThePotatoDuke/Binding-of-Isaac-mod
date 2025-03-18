@@ -4,7 +4,7 @@ if EID then
     EID:addCollectible(Isaac.GetItemIdByName("Wind-Up Key"),
         "Fire in a circling motion to wind up.#Stopping releases a spiral of tears in the opposite direction.# Pressing the wrong button or leaving the room resets the winding#\1Tear amount increases with tear stat#\2 Tears from the spiral deal 0.8 X Isaac's dmg (multipler can get lower for some synergies)")
     EID:addCollectible(Isaac.GetItemIdByName("Critical Hit"),
-        "\2 0.7 range multiplier# Tears get larger right before hitting the ground# \1 If the tear hits an enemy during this time, it deals Isaac's damage x 1.6")
+        "\2 0.7 range multiplier# Tears get larger right before hitting the ground# \1 If the tear hits an enemy during this time, it deals Isaac's damage x 1.7")
     EID:addCollectible(Isaac.GetItemIdByName("Schizophrenia"),
         "Enemies have a 30% chance to be replaced by hallucinations#{{BossRoom}} Bosses have 15% chance to be replaced# {{Luck}} Not affected by luck# Hallucinations can pass through walls and eachother# Hallucinations can't hurt Isaac# Hallucinations disappear after clearing the room")
     EID:addCollectible(Isaac.GetItemIdByName("Fixed Modem"),

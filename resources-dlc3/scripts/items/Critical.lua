@@ -21,6 +21,11 @@ function Critical:scaleTear()
                 tear.CollisionDamage = tear.CollisionDamage * 1.6
                 tear.Scale = tear.Scale * 1.3
             end
+            if tear.Height < -10 and storedTear.isBoosted then
+                storedTear.isBoosted = false
+                tear.CollisionDamage = tear.CollisionDamage / 1.7
+                tear.Scale = tear.Scale / 1.3
+            end
         else
             -- Remove invalid tears
             table.remove(tears, i)
@@ -47,10 +52,7 @@ function Critical:OnCache(player, cacheFlags)
         for i = 0, numPlayers - 1 do
             local player = Isaac.GetPlayer(i)
             if player:HasCollectible(Critical.ID) then
-                local stats = player:GetData().CriticalStats or {}
-                stats.RangeMult = (stats.RangeMult or 1) * 0.7
-                player:GetData().CriticalStats = stats
-                player.TearRange = player.TearRange * stats.RangeMult
+                player.TearRange = player.TearRange * 0.7
                 player.TearFallingSpeed = player.TearFallingSpeed + 1
                 break
             end
