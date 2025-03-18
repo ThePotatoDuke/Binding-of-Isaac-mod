@@ -18,12 +18,12 @@ function Critical:scaleTear()
         if tear and tear:Exists() then
             if tear.Height > -10 and not storedTear.isBoosted then
                 storedTear.isBoosted = true
-                tear.CollisionDamage = tear.CollisionDamage * 1.6
+                tear.CollisionDamage = tear.CollisionDamage * 1.8
                 tear.Scale = tear.Scale * 1.3
             end
-            if tear.Height < -10 and storedTear.isBoosted then
+            if tear.Height < -14 and storedTear.isBoosted then
                 storedTear.isBoosted = false
-                tear.CollisionDamage = tear.CollisionDamage / 1.7
+                tear.CollisionDamage = tear.CollisionDamage / 1.8
                 tear.Scale = tear.Scale / 1.3
             end
         else
@@ -52,7 +52,7 @@ function Critical:OnCache(player, cacheFlags)
         for i = 0, numPlayers - 1 do
             local player = Isaac.GetPlayer(i)
             if player:HasCollectible(Critical.ID) then
-                player.TearRange = player.TearRange * 0.7
+                player.TearRange = player.TearRange * 0.6
                 player.TearFallingSpeed = player.TearFallingSpeed + 1
                 break
             end
