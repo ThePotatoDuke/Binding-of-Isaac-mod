@@ -20,7 +20,7 @@ This item pack mod adds unique ideas I had for *The Binding of Isaac: Repentance
 ## 🔧 Scripting
 
 This mod uses Lua scripting to implement all its logic and behavior.  
-Built with <img src="https://upload.wikimedia.org/wikipedia/commons/c/cf/Lua-Logo.svg" alt="Lua" width="20"/> Lua.
+Built with <img src="https://upload.wikimedia.org/wikipedia/commons/c/cf/Lua-Logo.svg" alt="Lua" width="26"/> Lua.
 
 ## 📦 Installation
 
@@ -30,13 +30,13 @@ You can install Duke's Item Pack in two ways:
 1. Install repentagon by following this quick [guide](https://repentogon.com/install.html)
 2. Download the mod files from the [Releases](https://github.com/ThePotatoDuke/Binding-of-Isaac-mod/releases) section.  
 3. Extract the folder and place it into your Isaac `mods` directory:  
-   `Documents/My Games/Binding of Isaac Repentance/mods`  
+   `C:\Program Files (x86)\Steam\steamapps\common\The Binding of Isaac Rebirth\mods`  
 4. Launch the game and enable the mod from the Mods menu.  
 5. Enjoy!
 
 ### 🔹 Method 2: Steam Workshop
 1. Install repentagon by following this quick [guide](https://repentogon.com/install.html)
-2. Visit the mod's [Steam Workshop page](https://steamcommunity.com/sharedfiles/filedetails/?id=YOUR_MOD_ID).  
+2. Visit the mod's [Steam Workshop page]([https://steamcommunity.com/sharedfiles/filedetails/?id=YOUR_MOD_ID](https://steamcommunity.com/sharedfiles/filedetails/?id=3428840360).  
 3. Click **Subscribe**.  
 4. Launch the game — the mod will be automatically downloaded and enabled.  
 5. You're good to go!
@@ -44,7 +44,7 @@ You can install Duke's Item Pack in two ways:
 
 ## 🧠 Inspiration
 
-Some items are based on psychological or abstract concepts, aiming to blend gameplay mechanics with thematic ideas. The goal is to create items that feel **fresh**, **fun**, and sometimes a little **weird**.
+Some items are based on psychological, abstract or goofy concepts, aiming to blend gameplay mechanics with thematic ideas. The goal is to create items that feel **fresh**, **fun**, and sometimes a little **weird**.
 
 ## 📫 Feedback & Contributions
 
@@ -54,8 +54,5 @@ You can also message me if you have cool item ideas you'd like to see in-game.
 ---
 
 Let me know if you'd like me to add screenshots, item descriptions, changelog, or anything else!
-
-
-<img src="https://upload.wikimedia.org/wikipedia/commons/c/cf/Lua-Logo.svg" alt="Lua" width="60"/>
 
 
