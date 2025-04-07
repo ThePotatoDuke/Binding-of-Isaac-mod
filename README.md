@@ -28,7 +28,7 @@ You can install Duke's Item Pack in two ways:
 
 ### 🔹 Method 1: Manual Installation
 1. Install repentagon by following this quick [guide](https://repentogon.com/install.html)
-2. Download the mod files from the [Releases](https://github.com/ThePotatoDuke/Binding-of-Isaac-mod/releases) section.  
+2. Download the mod files from the [Releases](https://github.com/ThePotatoDuke/Binding-of-Isaac-mod/releases)) section.  
 3. Extract the folder and place it into your Isaac `mods` directory:  
    `C:\Program Files (x86)\Steam\steamapps\common\The Binding of Isaac Rebirth\mods`  
 4. Launch the game and enable the mod from the Mods menu.  
