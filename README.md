@@ -6,10 +6,12 @@ This item pack mod adds unique ideas I had for *The Binding of Isaac: Repentance
 
 - 🧩 Custom items with original mechanics  
 - 🧠 Unique synergies with vanilla content  
-- 🧪 Creative and experimental effects  
-- 🔧 Actively maintained and updated
+- 🧪 Creative and experimental effects
 
-## 🔮 Current Items
+
+## 🔮 Items
+<img src="https://imgur.com/g55vxCG.png" alt="Alt Text" width="300"/>
+
 
 - **Malediction** – Mark enemies and detonate the curse for bonus damage  
 - **Schizophrenia** – A psychological twist with unpredictable effects  
@@ -28,7 +30,7 @@ You can install Duke's Item Pack in two ways:
 
 ### 🔹 Method 1: Manual Installation
 1. Install repentagon by following this quick [guide](https://repentogon.com/install.html)
-2. Download the mod files from the [Releases](https://github.com/ThePotatoDuke/Binding-of-Isaac-mod/releases)) section.  
+2. Download the mod files from the [Releases](https://github.com/ThePotatoDuke/Binding-of-Isaac-mod/releases) section.  
 3. Extract the folder and place it into your Isaac `mods` directory:  
    `C:\Program Files (x86)\Steam\steamapps\common\The Binding of Isaac Rebirth\mods`  
 4. Launch the game and enable the mod from the Mods menu.  
@@ -36,7 +38,7 @@ You can install Duke's Item Pack in two ways:
 
 ### 🔹 Method 2: Steam Workshop
 1. Install repentagon by following this quick [guide](https://repentogon.com/install.html)
-2. Visit the mod's [Steam Workshop page]([https://steamcommunity.com/sharedfiles/filedetails/?id=YOUR_MOD_ID](https://steamcommunity.com/sharedfiles/filedetails/?id=3428840360).  
+2. Visit the mod's [Steam Workshop page](https://steamcommunity.com/sharedfiles/filedetails/?id=3428840360).  
 3. Click **Subscribe**.  
 4. Launch the game — the mod will be automatically downloaded and enabled.  
 5. You're good to go!
