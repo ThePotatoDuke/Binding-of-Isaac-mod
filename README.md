@@ -53,8 +53,4 @@ Some items are based on psychological, abstract or goofy concepts, aiming to ble
 Feel free to open issues or submit pull requests!  
 You can also message me if you have cool item ideas you'd like to see in-game.
 
----
-
-Let me know if you'd like me to add screenshots, item descriptions, changelog, or anything else!
-
 
